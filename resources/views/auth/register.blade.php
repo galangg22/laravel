@@ -109,21 +109,36 @@ body {
     opacity: 0.7;
 }
 
+/* Tombol registrasi */
 .btn-enhanced {
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
-    background: linear-gradient(90deg, #002c14 0%, #000 100%);
+    background: linear-gradient(90deg, #00ff88 0%, #00d96e 100%); /* Gradien lebih terang */
     color: #fff;
     border: none;
 }
 
+/* Efek Hover */
 .btn-enhanced:hover:not(:disabled) {
     transform: translateY(-3px);
     box-shadow: 0 15px 35px rgba(0, 255, 136, 0.4);
-    background: linear-gradient(90deg, #000 0%, #002c14 100%);
+    background: linear-gradient(90deg, #00d96e 0%, #00ff88 100%); /* Hover lebih cerah */
 }
 
+/* Efek saat tombol aktif, setelah centang checkbox */
+.btn-enhanced:enabled {
+    background: linear-gradient(90deg, #00ff88 0%, #00d96e 100%);
+}
+
+/* Efek saat tombol nonaktif (disabled) */
+.btn-enhanced:disabled {
+    background: rgba(0, 255, 136, 0.2);
+    color: rgba(0, 255, 136, 0.5);
+    cursor: not-allowed;
+}
+
+/* Animasi saat tombol aktif */
 .btn-enhanced::before {
     content: '';
     position: absolute;
@@ -135,9 +150,17 @@ body {
     transition: left 0.5s;
 }
 
+/* Hover efek tombol */
 .btn-enhanced:hover::before {
     left: 100%;
 }
+
+/* Mengatur transisi saat tombol dalam status disabled */
+.btn-enhanced:disabled:hover {
+    transform: none;
+    box-shadow: none;
+}
+
 
 .back-btn {
     background: rgba(0, 44, 20, 0.8);

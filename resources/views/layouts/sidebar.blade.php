@@ -34,7 +34,6 @@
         <a href="{{ route('dashboard.index') }}" class="text-sm font-semibold hover:text-red-500 transition rounded-md px-2 py-1 flex justify-center">HOME</a>
         <hr class="border-t-2 border-green-400 shadow-[0_0_10px_#00FF00]" />
 
-
         {{-- Loop kategori dinamis --}}
         @if(isset($categories) && $categories->count() > 0)
             @foreach($categories as $category)
@@ -54,6 +53,20 @@
         <p class="text-sm mb-2">Contact: ‪+62 812 3456 7890‬</p>
         <p class="text-sm">YouTube: Heart Horizon</p>
         <hr class="border-green-800 mt-4" />
+    </div>
+
+    {{-- Tombol Logout di paling bawah --}}
+    <div class="sticky bottom-0 bg-black border-t border-red-500 p-4">
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button type="submit" 
+                    class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-md transition duration-200 flex items-center justify-center space-x-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                </svg>
+                <span>Logout</span>
+            </button>
+        </form>
     </div>
 </aside>
 

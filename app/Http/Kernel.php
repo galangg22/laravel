@@ -70,6 +70,7 @@ class Kernel extends HttpKernel
     // Middleware lain...
     'check.blocked' => \App\Http\Middleware\CheckIfBlocked::class,
     'admin' => \App\Http\Middleware\AdminMiddleware::class,
+    'check.ispaid' => \App\Http\Middleware\CheckIsPaid::class,
 ];
 
 }
