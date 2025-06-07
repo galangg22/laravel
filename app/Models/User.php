@@ -51,6 +51,28 @@ class User extends Authenticatable
 {
     return $this->role === 'admin';  // Hanya admin yang boleh akses
 }
+// app/Models/User.php
 
+public function profile()
+    {
+        return $this->hasOne(Profile::class);
+    }
+
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class);
+    }
+
+    // Relasi many-to-many ke Videos melalui favorites
+    public function favoriteVideos()
+    {
+        return $this->belongsToMany(Video::class, 'favorites');
+    }
+
+    // Helper method untuk cek apakah video sudah di-favorite
+    public function hasFavorited($videoId)
+    {
+        return $this->favorites()->where('video_id', $videoId)->exists();
+    }
      
 }

@@ -53,10 +53,26 @@ Route::get('/payment/process', [MidtransController::class, 'processPayment'])->n
 
 Route::middleware(['auth', 'check.blocked', 'check.ispaid'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+    
     // Kategori dan video
     Route::get('/category/{category}', [DashboardController::class, 'showCategory'])->name('category.show');
     Route::get('/video/{video}', [DashboardController::class, 'showVideo'])->name('video.show');
-
+    
+    // Profile routes
+    Route::get('/user/profile', [DashboardController::class, 'profile'])->name('user.profile');
+    Route::post('/user/profile/update', [DashboardController::class, 'updateProfile'])->name('user.profile.update');
+    Route::post('/profile/setup', [DashboardController::class, 'storeProfile'])->name('profile.setup');
+    Route::post('/profile/skip', [DashboardController::class, 'skipProfileSetup'])->name('profile.skip');
+    
+    // Favorite routes
+    Route::post('/video/{video}/favorite', [DashboardController::class, 'toggleFavorite'])->name('video.favorite.toggle');
+    Route::get('/favorites', [DashboardController::class, 'favorites'])->name('favorites.index');
+    Route::delete('/favorite/{video}', [DashboardController::class, 'removeFavorite'])->name('favorite.destroy');
+    Route::get('/video/{video}/favorite-status', [DashboardController::class, 'getFavoriteStatus'])->name('video.favorite.status');
+    Route::get('/api/user/favorites', [DashboardController::class, 'getUserFavorites'])->name('api.user.favorites');
+    
     // Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
+
+

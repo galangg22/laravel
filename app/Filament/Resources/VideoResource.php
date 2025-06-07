@@ -39,6 +39,10 @@ class VideoResource extends Resource
                     ->label('Thumbnail')
                     ->required()
                     ->image(),
+                    Forms\Components\TextInput::make('video_url')
+                    ->label('Video URL')
+                    ->url()
+                    ->required(),
             ]);
     }
 
@@ -56,6 +60,9 @@ class VideoResource extends Resource
 
                 Tables\Columns\ImageColumn::make('thumbnail_path')  // Menampilkan gambar berdasarkan thumbnail_path
                     ->label('Thumbnail'),
+                    Tables\Columns\TextColumn::make('video_url')
+                    ->url(fn ($record) => $record->reference_url ? $record->reference_url : '#')  // Mengembalikan URL yang valid atau fallback ke '#'
+                    ->label('video URL')
             ])
             ->filters([ // Filters can be added here if needed
                 //
