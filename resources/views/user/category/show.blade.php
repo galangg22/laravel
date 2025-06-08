@@ -17,31 +17,34 @@
     };
 </script>
 
-<div class="min-h-screen text-white p-4">
+<div class="min-h-screen text-white p-2 sm:p-4 lg:p-6">
     <div class="max-w-7xl mx-auto">
         
-        <!-- Back Button & Category Title -->
-        <div class="flex items-center justify-between mb-6">
+        <!-- RESPONSIVE HEADER -->
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 gap-3 sm:gap-4">
+            <!-- Back Button - RESPONSIVE -->
             <a href="{{ route('dashboard.index') }}" 
-               class="btn bg-green-600 hover:bg-green-700 border-green-600 hover:border-green-700 text-white">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+               class="inline-flex items-center justify-center px-3 py-2 sm:px-4 sm:py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-green-500/30 text-sm sm:text-base w-full sm:w-auto">
+                <svg class="w-4 h-4 sm:w-5 sm:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                 </svg>
-                Back to Dashboard
+                <span class="whitespace-nowrap">Back to Dashboard</span>
             </a>
             
-            <h1 class="text-3xl md:text-2xl sm:text-xl font-bold text-green-400 text-center flex-1" 
+            <!-- Category Title - RESPONSIVE -->
+            <h1 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-green-400 text-center sm:text-left flex-1 order-first sm:order-none" 
                 style="font-family: 'Orbitron', sans-serif; text-shadow: 0 0 10px #00ff00;">
                 {{ $category->name }}
             </h1>
             
-            <div class="w-32"></div>
+            <!-- Spacer for desktop alignment -->
+            <div class="hidden lg:block w-32"></div>
         </div>
 
-        <!-- Grid View (Default) - NO FAVORITE BUTTONS -->
+        <!-- RESPONSIVE GRID VIEW -->
         <div id="grid-view" class="grid-container">
             @if($videos->count() > 0)
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
                     @foreach($videos as $video)
                     <div class="video-card bg-gray-800/50 rounded-xl overflow-hidden border border-green-600/30 hover:border-green-500 transition-all duration-300 cursor-pointer transform hover:scale-105 relative"
                          onclick="openVideoPlayer({{ $video->id }})">
@@ -55,16 +58,16 @@
                                      onerror="this.src='https://via.placeholder.com/320x180?text=No+Thumbnail'">
                             @else
                                 <div class="w-full h-full flex items-center justify-center bg-gray-700">
-                                    <svg class="w-16 h-16 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <svg class="w-12 sm:w-16 h-12 sm:h-16 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path>
                                     </svg>
                                 </div>
                             @endif
                             
-                            <!-- Play Button Overlay -->
+                            <!-- Responsive Play Button Overlay -->
                             <div class="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
-                                <div class="bg-green-600 rounded-full p-4">
-                                    <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <div class="bg-green-600 rounded-full p-2 sm:p-3 lg:p-4">
+                                    <svg class="w-6 h-6 sm:w-8 sm:h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path>
                                     </svg>
                                 </div>
@@ -72,12 +75,12 @@
                         </div>
                         
                         <!-- Video Info -->
-                        <div class="p-4">
-                            <h3 class="font-bold text-lg text-green-400 mb-2 line-clamp-2" 
+                        <div class="p-3 sm:p-4">
+                            <h3 class="font-bold text-sm sm:text-base lg:text-lg text-green-400 mb-2 line-clamp-2" 
                                 style="font-family: 'Orbitron', sans-serif;">
                                 {{ $video->title }}
                             </h3>
-                            <p class="text-gray-300 text-sm line-clamp-3">
+                            <p class="text-gray-300 text-xs sm:text-sm line-clamp-2 sm:line-clamp-3">
                                 {{ $video->description }}
                             </p>
                         </div>
@@ -85,31 +88,31 @@
                     @endforeach
                 </div>
             @else
-                <div class="text-center py-16">
+                <div class="text-center py-12 sm:py-16">
                     <div class="text-gray-400 mb-4">
-                        <svg class="w-24 h-24 mx-auto mb-4" fill="currentColor" viewBox="0 0 20 20">
+                        <svg class="w-16 h-16 sm:w-24 sm:h-24 mx-auto mb-4" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path>
                         </svg>
                     </div>
-                    <h3 class="text-xl font-bold text-gray-400 mb-2">No Videos Available</h3>
-                    <p class="text-gray-500">This category doesn't have any videos yet.</p>
+                    <h3 class="text-lg sm:text-xl font-bold text-gray-400 mb-2">No Videos Available</h3>
+                    <p class="text-gray-500 text-sm sm:text-base">This category doesn't have any videos yet.</p>
                 </div>
             @endif
         </div>
 
-        <!-- Video Player View (Hidden by default) -->
+        <!-- RESPONSIVE VIDEO PLAYER VIEW -->
         <div id="player-view" class="player-container hidden">
-            <!-- Mobile Drawer Toggle -->
-            <div class="lg:hidden mb-4">
-                <button id="playlist-toggle" class="btn bg-green-600 hover:bg-green-700 border-green-600 hover:border-green-700 text-white">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <!-- Mobile Controls -->
+            <div class="lg:hidden mb-3 sm:mb-4 flex flex-col sm:flex-row gap-2 sm:gap-3">
+                <button id="playlist-toggle" class="inline-flex items-center justify-center px-3 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-all duration-300 text-sm flex-1 sm:flex-none">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
                     Playlist
                 </button>
                 
-                <button id="back-to-grid" class="btn bg-gray-600 hover:bg-gray-700 border-gray-600 hover:border-gray-700 text-white ml-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button id="back-to-grid" class="inline-flex items-center justify-center px-3 py-2 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-lg transition-all duration-300 text-sm flex-1 sm:flex-none">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 14a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 14a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
                     </svg>
                     Grid View
@@ -122,16 +125,16 @@
                 
                 <!-- Main Content -->
                 <div class="drawer-content">
-                    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
                         
                         <!-- Spacer for desktop sidebar -->
                         <div class="hidden lg:block lg:col-span-1"></div>
                         
                         <!-- Main Video Area -->
                         <div class="lg:col-span-3">
-                            <!-- Back to Grid Button (Desktop) -->
+                            <!-- Desktop Back Button -->
                             <div class="hidden lg:block mb-4">
-                                <button id="back-to-grid-desktop" class="btn bg-gray-600 hover:bg-gray-700 border-gray-600 hover:border-gray-700 text-white">
+                                <button id="back-to-grid-desktop" class="inline-flex items-center justify-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-lg transition-all duration-300">
                                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 14a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 14a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
                                     </svg>
@@ -140,7 +143,7 @@
                             </div>
                             
                             <!-- Video Player Container -->
-                            <div class="relative bg-black rounded-xl overflow-hidden shadow-2xl border-2 border-green-600 mb-6">
+                            <div class="relative bg-black rounded-lg sm:rounded-xl overflow-hidden shadow-2xl border-2 border-green-600 mb-4 sm:mb-6">
                                 <div class="aspect-video">
                                     <iframe id="youtube-player"
                                             class="w-full h-full"
@@ -153,15 +156,15 @@
                                 </div>
                             </div>
                             
-                            <!-- Video Info Section WITH FAVORITE BUTTON -->
-                            <div class="bg-gray-800/50 rounded-xl p-6 border border-green-600/30">
-                                <div class="flex items-start gap-4">
-                                    <!-- Favorite Button - ONLY IN PLAYLIST MODE -->
+                            <!-- Video Info Section -->
+                            <div class="bg-gray-800/50 rounded-lg sm:rounded-xl p-4 sm:p-6 border border-green-600/30">
+                                <div class="flex flex-col sm:flex-row items-start gap-3 sm:gap-4">
+                                    <!-- Favorite Button -->
                                     <button id="favorite-btn" 
-                                            class="btn btn-circle transition-all duration-300 group"
+                                            class="inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-gray-500 text-gray-400 hover:bg-gray-500 transition-all duration-300 group flex-shrink-0"
                                             onclick="toggleCurrentVideoFavorite()"
                                             title="Add to favorites">
-                                        <svg id="heart-icon" class="w-6 h-6 transition-all duration-300 group-hover:scale-110" 
+                                        <svg id="heart-icon" class="w-5 h-5 sm:w-6 sm:h-6 transition-all duration-300 group-hover:scale-110" 
                                              fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                                             <path stroke-linecap="round" stroke-linejoin="round" 
                                                   d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.682l-1.318-1.364a4.5 4.5 0 00-6.364 0z"></path>
@@ -169,12 +172,12 @@
                                     </button>
                                     
                                     <!-- Video Details -->
-                                    <div class="flex-1">
-                                        <h1 id="video-title" class="text-2xl font-bold text-green-400 mb-3" 
+                                    <div class="flex-1 min-w-0">
+                                        <h1 id="video-title" class="text-lg sm:text-xl lg:text-2xl font-bold text-green-400 mb-2 sm:mb-3 line-clamp-2" 
                                             style="font-family: 'Orbitron', sans-serif;">
                                             Select a video to play
                                         </h1>
-                                        <p id="video-description" class="text-gray-300 leading-relaxed">
+                                        <p id="video-description" class="text-gray-300 leading-relaxed text-sm sm:text-base line-clamp-3 sm:line-clamp-none">
                                             Choose a video from the playlist to start watching.
                                         </p>
                                     </div>
@@ -184,24 +187,25 @@
                     </div>
                 </div>
                 
-                <!-- Playlist Sidebar - NO FAVORITE BUTTONS -->
+                <!-- Responsive Playlist Sidebar -->
                 <div class="drawer-side lg:drawer-open">
                     <label for="playlist-drawer" class="drawer-overlay lg:hidden"></label>
-                    <div class="w-80 min-h-full bg-gray-900/95 lg:bg-transparent">
+                    <div class="w-72 sm:w-80 min-h-full bg-gray-900/95 lg:bg-transparent">
                         
                         <!-- Playlist Header -->
-                        <div class="bg-green-600 rounded-t-xl lg:rounded-xl p-4 m-4 lg:m-0">
-                            <h3 class="text-xl font-bold text-white flex items-center gap-2" 
+                        <div class="bg-green-600 rounded-t-xl lg:rounded-xl p-3 sm:p-4 m-3 sm:m-4 lg:m-0">
+                            <h3 class="text-lg sm:text-xl font-bold text-white flex items-center gap-2" 
                                 style="font-family: 'Orbitron', sans-serif;">
-                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
                                 </svg>
                                 Playlist
                             </h3>
-                            <p class="text-green-100 text-sm mt-1" id="playlist-count">{{ $videos->count() }} videos</p>
+                            <p class="text-green-100 text-xs sm:text-sm mt-1" id="playlist-count">{{ $videos->count() }} videos</p>
                         </div>               
-                        <!-- Playlist Items - NO FAVORITE BUTTONS -->
-                        <div class="bg-gray-800/80 lg:bg-gray-800/50 rounded-b-xl lg:rounded-xl mx-4 lg:mx-0 lg:mt-2 border border-green-600/30">
+                        
+                        <!-- Playlist Items -->
+                        <div class="bg-gray-800/80 lg:bg-gray-800/50 rounded-b-xl lg:rounded-xl mx-3 sm:mx-4 lg:mx-0 lg:mt-2 border border-green-600/30">
                             <div id="playlist-container" class="space-y-1 p-2">
                                 <!-- Playlist items will be populated by JavaScript -->
                             </div>
@@ -217,7 +221,7 @@
 <div id="toast-container" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 space-y-2"></div>
 
 <script>
-// Data video dari Blade
+// Data video dari Blade (sama seperti sebelumnya)
 const videosData = [
     @if($videos->count() > 0)
         @foreach($videos as $video)
@@ -337,7 +341,7 @@ function updatePlayerFavoriteButton() {
             heartIcon.setAttribute('fill', 'currentColor');
             heartIcon.classList.remove('text-gray-400');
             heartIcon.classList.add('text-red-500');
-            favoriteBtn.classList.remove('btn-outline', 'border-gray-500', 'text-gray-400', 'hover:bg-gray-500');
+            favoriteBtn.classList.remove('border-gray-500', 'text-gray-400', 'hover:bg-gray-500');
             favoriteBtn.classList.add('bg-red-500/20', 'border-red-500', 'text-red-500', 'hover:bg-red-500/30');
             favoriteBtn.setAttribute('title', 'Remove from favorites');
         } else {
@@ -346,7 +350,7 @@ function updatePlayerFavoriteButton() {
             heartIcon.classList.remove('text-red-500');
             heartIcon.classList.add('text-gray-400');
             favoriteBtn.classList.remove('bg-red-500/20', 'border-red-500', 'text-red-500', 'hover:bg-red-500/30');
-            favoriteBtn.classList.add('btn-outline', 'border-gray-500', 'text-gray-400', 'hover:bg-gray-500');
+            favoriteBtn.classList.add('border-gray-500', 'text-gray-400', 'hover:bg-gray-500');
             favoriteBtn.setAttribute('title', 'Add to favorites');
         }
     } else {
@@ -355,7 +359,7 @@ function updatePlayerFavoriteButton() {
         heartIcon.classList.remove('text-red-500');
         heartIcon.classList.add('text-gray-400');
         favoriteBtn.classList.remove('bg-red-500/20', 'border-red-500', 'text-red-500', 'hover:bg-red-500/30');
-        favoriteBtn.classList.add('btn-outline', 'border-gray-500', 'text-gray-400', 'hover:bg-gray-500');
+        favoriteBtn.classList.add('border-gray-500', 'text-gray-400', 'hover:bg-gray-500');
         favoriteBtn.setAttribute('title', 'Select a video first');
     }
 }
@@ -398,7 +402,7 @@ function initializePlaylist() {
     if (videosData.length === 0) {
         container.innerHTML = `
             <div class="text-center py-8 text-gray-400">
-                <p>No videos available</p>
+                <p class="text-sm">No videos available</p>
             </div>
         `;
         return;
@@ -407,21 +411,21 @@ function initializePlaylist() {
     videosData.forEach((video, index) => {
         const isActive = index === currentVideoIndex;
         const playlistItem = document.createElement('div');
-        playlistItem.className = `playlist-item p-3 rounded-lg cursor-pointer transition-all duration-300 hover:bg-green-600/20 ${isActive ? 'bg-green-600/30 border border-green-500' : 'hover:bg-gray-700/50'}`;
+        playlistItem.className = `playlist-item p-2 sm:p-3 rounded-lg cursor-pointer transition-all duration-300 hover:bg-green-600/20 ${isActive ? 'bg-green-600/30 border border-green-500' : 'hover:bg-gray-700/50'}`;
         playlistItem.onclick = () => playVideo(index);
         
         playlistItem.innerHTML = `
-            <div class="flex gap-3">
+            <div class="flex gap-2 sm:gap-3">
                 <div class="relative flex-shrink-0">
                     <img src="${video.thumbnail}" 
                          alt="${video.title}" 
-                         class="w-20 h-14 object-cover rounded-md"
+                         class="w-16 h-12 sm:w-20 sm:h-14 object-cover rounded-md"
                          onerror="this.src='https://via.placeholder.com/80x56?text=No+Image'">
-                    ${isActive ? '<div class="absolute inset-0 bg-green-500/20 rounded-md flex items-center justify-center"><svg class="w-6 h-6 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg></div>' : ''}
+                    ${isActive ? '<div class="absolute inset-0 bg-green-500/20 rounded-md flex items-center justify-center"><svg class="w-4 h-4 sm:w-6 sm:h-6 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg></div>' : ''}
                 </div>
                 <div class="flex-1 min-w-0">
-                    <h4 class="font-semibold text-sm ${isActive ? 'text-green-400' : 'text-white'} truncate">${video.title}</h4>
-                    <p class="text-xs text-gray-400 mt-1 truncate">${video.description}</p>
+                    <h4 class="font-semibold text-xs sm:text-sm ${isActive ? 'text-green-400' : 'text-white'} line-clamp-2">${video.title}</h4>
+                    <p class="text-xs text-gray-400 mt-1 line-clamp-1 sm:line-clamp-2">${video.description}</p>
                 </div>
             </div>
         `;
@@ -479,26 +483,26 @@ function showToast(message, type = 'info') {
         case 'success':
             bgColor = 'bg-gradient-to-r from-green-500 to-green-600';
             borderColor = 'border-green-400';
-            icon = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            icon = `<svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                     </svg>`;
             break;
         case 'error':
             bgColor = 'bg-gradient-to-r from-red-500 to-red-600';
             borderColor = 'border-red-400';
-            icon = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            icon = `<svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>`;
             break;
         default:
             bgColor = 'bg-gradient-to-r from-blue-500 to-blue-600';
             borderColor = 'border-blue-400';
-            icon = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            icon = `<svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>`;
     }
     
-    toast.className = `${bgColor} ${borderColor} border-2 text-white px-6 py-4 rounded-xl shadow-2xl backdrop-blur-sm transform transition-all duration-500 ease-out translate-y-[-20px] opacity-0 max-w-md`;
+    toast.className = `${bgColor} ${borderColor} border-2 text-white px-4 sm:px-6 py-3 sm:py-4 rounded-xl shadow-2xl backdrop-blur-sm transform transition-all duration-500 ease-out translate-y-[-20px] opacity-0 max-w-sm sm:max-w-md`;
     
     toast.innerHTML = `
         <div class="flex items-center gap-3">
@@ -506,7 +510,7 @@ function showToast(message, type = 'info') {
                 ${icon}
             </div>
             <div class="flex-1">
-                <p class="font-semibold text-sm">${message}</p>
+                <p class="font-semibold text-sm sm:text-base">${message}</p>
             </div>
             <button onclick="removeToast('${toastId}')" class="flex-shrink-0 ml-2 hover:bg-white/20 rounded-full p-1 transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -573,6 +577,13 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <style>
+.line-clamp-1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
 .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -587,6 +598,13 @@ document.addEventListener('DOMContentLoaded', function() {
     overflow: hidden;
 }
 
+/* Enhanced responsive grid */
+@media (min-width: 1536px) {
+    .grid-cols-1.sm\:grid-cols-2.md\:grid-cols-2.lg\:grid-cols-3.xl\:grid-cols-4.\32xl\:grid-cols-5 {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+}
+
 /* Enhanced toast animations */
 #toast-container .transform {
     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
@@ -595,6 +613,30 @@ document.addEventListener('DOMContentLoaded', function() {
 /* Hover effects for favorite button */
 .group:hover .group-hover\:scale-110 {
     transform: scale(1.1);
+}
+
+/* Mobile-first responsive utilities */
+@media (max-width: 640px) {
+    .video-card {
+        margin-bottom: 0.5rem;
+    }
+    
+    .playlist-item {
+        border-radius: 0.5rem;
+    }
+}
+
+/* Smooth transitions for all interactive elements */
+button, a {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Better touch targets for mobile */
+@media (max-width: 768px) {
+    button, a {
+        min-height: 44px;
+        min-width: 44px;
+    }
 }
 </style>
 

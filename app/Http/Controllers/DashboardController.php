@@ -47,7 +47,7 @@ class DashboardController extends Controller
         return view('user.video.show', compact('category', 'videos'));
     }
 
-    // Menampilkan halaman profile user
+    // PERBAIKAN: Menampilkan halaman profile user
     public function profile()
     {
         $user = Auth::user();
@@ -57,14 +57,8 @@ class DashboardController extends Controller
             return redirect()->route('login');
         }
         
-        // Cek apakah user memiliki profile
-        $profile = $user->profile;
-        
-        // Jika belum ada profile, redirect ke dashboard dengan popup
-        if (!$profile) {
-            return redirect()->route('dashboard.index')->with('showProfilePopup', true);
-        }
-
+        // PERBAIKAN: Jangan redirect jika belum ada profile
+        // Biarkan user masuk ke halaman profile untuk membuat profile baru
         return view('user.profile', compact('user'));
     }
 
@@ -95,12 +89,9 @@ class DashboardController extends Controller
                 'name' => $request->name
             ]);
             
-            // Jika sudah ada profil, jangan buat lagi
+            // PERBAIKAN: Jika sudah ada profil, update saja
             if ($user->profile) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Profile already exists'
-                ], 400);
+                return $this->updateProfile($request);
             }
 
             $data = $request->only(['status', 'bio', 'age', 'gender']);
@@ -221,12 +212,12 @@ class DashboardController extends Controller
                 ], 401);
             }
 
-            // Jika sudah ada profil, jangan buat lagi
+            // PERBAIKAN: Jika sudah ada profil, update saja
             if ($user->profile) {
                 return response()->json([
-                    'success' => false,
-                    'message' => 'Profile already exists'
-                ], 400);
+                    'success' => true,
+                    'message' => 'Profile already exists!'
+                ]);
             }
 
             // Buatkan profil default

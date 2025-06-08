@@ -56,8 +56,6 @@ Route::middleware(['auth', 'check.blocked', 'check.ispaid'])->group(function () 
     
     // Kategori dan video
     Route::get('/category/{category}', [DashboardController::class, 'showCategory'])->name('category.show');
-    Route::get('/video/{video}', [DashboardController::class, 'showVideo'])->name('video.show');
-    
     // Profile routes
     Route::get('/user/profile', [DashboardController::class, 'profile'])->name('user.profile');
     Route::post('/user/profile/update', [DashboardController::class, 'updateProfile'])->name('user.profile.update');

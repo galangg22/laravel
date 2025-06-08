@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.dashboard')
 
 @section('content')
 
@@ -87,15 +87,15 @@
                             </div>
                         @endif
                         
-                        <!-- RESPONSIVE PLAY BUTTON OVERLAY - DIPERBAIKI -->
-                        <div class="play-button-overlay group-hover:opacity-100">
-                            <div class="play-button group-hover:scale-100">
+                        <!-- Play Button Overlay -->
+                        <div class="play-button-overlay">
+                            <div class="play-button">
                                 <svg fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path>
                                 </svg>
                             </div>
                         </div>
-
+                        
                         <!-- Gradient Overlay -->
                         <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     </div>
@@ -183,25 +183,25 @@
     </div>
 </div>
 
-<!-- Enhanced Video Player Modal -->
-<div id="videoModal" class="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4 hidden backdrop-blur-sm">
-    <div class="bg-gradient-to-br from-gray-900 to-black rounded-2xl max-w-6xl w-full max-h-[95vh] overflow-hidden border-2 border-purple-600 shadow-2xl shadow-purple-500/20">
+<!-- Enhanced Responsive Video Player Modal -->
+<div id="videoModal" class="fixed inset-0 bg-black/95 flex items-center justify-center z-50 p-2 sm:p-4 hidden backdrop-blur-sm">
+    <div class="bg-gradient-to-br from-gray-900 to-black rounded-2xl w-full max-w-7xl max-h-[95vh] overflow-hidden border-2 border-purple-600 shadow-2xl shadow-purple-500/20">
         <!-- Modal Header -->
-        <div class="bg-gradient-to-r from-purple-600 to-purple-700 p-4 flex items-center justify-between">
-            <h3 id="modalVideoTitle" class="text-lg sm:text-xl font-bold text-white truncate pr-4" style="font-family: 'Orbitron', sans-serif;">
+        <div class="bg-gradient-to-r from-purple-600 to-purple-700 p-3 sm:p-4 flex items-center justify-between">
+            <h3 id="modalVideoTitle" class="text-sm sm:text-lg lg:text-xl font-bold text-white truncate pr-4" style="font-family: 'Orbitron', sans-serif;">
                 Video Player
             </h3>
-            <button onclick="closeVideoModal()" class="text-white hover:text-gray-300 transition-colors duration-300 p-1">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <button onclick="closeVideoModal()" class="text-white hover:text-gray-300 transition-colors duration-300 p-1 hover:bg-white/10 rounded-lg">
+                <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
             </button>
         </div>
         
-        <!-- Video Player -->
-        <div class="aspect-video bg-black">
+        <!-- Responsive Video Container -->
+        <div class="video-container">
             <iframe id="modalYoutubePlayer"
-                    class="w-full h-full"
+                    class="responsive-video"
                     src=""
                     title="YouTube video player"
                     frameborder="0"
@@ -211,25 +211,46 @@
         </div>
         
         <!-- Video Info -->
-        <div class="p-4 sm:p-6 max-h-32 overflow-y-auto">
-            <p id="modalVideoDescription" class="text-gray-300 leading-relaxed text-sm sm:text-base">
+        <div class="p-3 sm:p-4 lg:p-6 max-h-32 overflow-y-auto">
+            <p id="modalVideoDescription" class="text-gray-300 leading-relaxed text-xs sm:text-sm lg:text-base">
                 Video description will appear here.
             </p>
         </div>
     </div>
 </div>
 
-<!-- Toast Container -->
-<div id="toast-container" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 space-y-2"></div>
-
 <script>
+// Wait for dashboard to be loaded
+window.addEventListener('dashboardLoaded', function() {
+    initializeFavorites();
+});
+
+// Fallback initialization
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(() => {
+        initializeFavorites();
+    }, 2000);
+});
+
+function initializeFavorites() {
+    console.log('Initializing favorites page...');
+    
+    // Initialize modal styles
+    const modal = document.getElementById('videoModal');
+    if (modal) {
+        modal.style.opacity = '0';
+        modal.style.transform = 'scale(0.95)';
+        modal.style.transition = 'all 0.3s ease-out';
+    }
+}
+
 // Video data from blade
 const favoriteVideos = [
     @foreach($favoriteVideos as $video)
     {
         id: {{ $video->id }},
-        title: '{{ str_replace(["'", '"'], ["\\'", '\\"'], $video->title) }}',
-        description: '{{ str_replace(["'", '"'], ["\\'", '\\"'], $video->description) }}',
+        title: {!! json_encode($video->title) !!},
+        description: {!! json_encode($video->description) !!},
         video_url: '{{ $video->video_url }}',
         category: '{{ $video->category->name }}'
     }@if(!$loop->last),@endif
@@ -244,70 +265,105 @@ function extractYouTubeId(url) {
     return match ? match[1] : url;
 }
 
-// Enhanced remove favorite with animation
+// Enhanced remove favorite dengan Sweet Alert
 function removeFavorite(videoId) {
     const btn = document.querySelector(`[data-video-id="${videoId}"]`);
     
-    if (confirm('Are you sure you want to remove this video from favorites?')) {
-        btn.disabled = true;
-        btn.innerHTML = '<div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>';
-        
-        // Get CSRF token
-        const csrfToken = document.querySelector('meta[name="csrf-token"]');
-        if (!csrfToken) {
-            showToast('Please refresh the page and try again.', 'error');
-            btn.disabled = false;
-            return;
+    if (!btn) {
+        console.error('Button not found for video ID:', videoId);
+        return;
+    }
+    
+    // Sweet Alert confirmation
+    Swal.fire({
+        title: 'Remove from Favorites?',
+        text: 'Are you sure you want to remove this video from your favorites?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Yes, remove it',
+        cancelButtonText: 'Keep it',
+        background: 'linear-gradient(135deg, #002c14 0%, #000000 50%, #002c14 100%)',
+        color: '#fff',
+        customClass: {
+            popup: 'heart-horizon-popup',
+            title: 'heart-horizon-title',
+            content: 'heart-horizon-content'
         }
-        
-        fetch(`/favorite/${videoId}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': csrfToken.getAttribute('content')
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Enhanced removal animation
-                const videoCard = btn.closest('.video-card');
-                videoCard.style.transform = 'scale(0.8) rotateY(90deg)';
-                videoCard.style.opacity = '0';
-                videoCard.style.filter = 'blur(5px)';
-                
-                setTimeout(() => {
-                    videoCard.remove();
-                    
-                    // Check if no more favorites
-                    const remainingCards = document.querySelectorAll('.video-card');
-                    if (remainingCards.length === 0) {
-                        setTimeout(() => {
-                            location.reload();
-                        }, 500);
-                    }
-                }, 400);
-                
-                showToast(data.message, 'success');
-            } else {
-                showToast(data.message, 'error');
+    }).then((result) => {
+        if (result.isConfirmed) {
+            btn.disabled = true;
+            btn.innerHTML = '<div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>';
+            
+            // Get CSRF token
+            const csrfToken = document.querySelector('meta[name="csrf-token"]');
+            if (!csrfToken) {
+                showToast('Please refresh the page and try again.', 'error');
                 btn.disabled = false;
                 btn.innerHTML = '<svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
+                return;
             }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showToast('Something went wrong!', 'error');
-            btn.disabled = false;
-            btn.innerHTML = '<svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
-        });
-    }
+            
+            fetch(`/favorite/${videoId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken.getAttribute('content')
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Enhanced removal animation
+                    const videoCard = btn.closest('.video-card');
+                    if (videoCard) {
+                        videoCard.style.transform = 'scale(0.8) rotateY(90deg)';
+                        videoCard.style.opacity = '0';
+                        videoCard.style.filter = 'blur(5px)';
+                        
+                        setTimeout(() => {
+                            videoCard.remove();
+                            
+                            // Check if no more favorites
+                            const remainingCards = document.querySelectorAll('.video-card');
+                            if (remainingCards.length === 0) {
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 500);
+                            }
+                        }, 400);
+                    }
+                    
+                    showToast(data.message || 'Video removed from favorites!', 'success');
+                } else {
+                    showToast(data.message || 'Failed to remove video', 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = '<svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('Something went wrong! Please try again.', 'error');
+                btn.disabled = false;
+                btn.innerHTML = '<svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
+            });
+        }
+    });
 }
 
 // Play video in modal
 function playVideo(videoId) {
     const video = favoriteVideos.find(v => v.id === videoId);
-    if (!video) return;
+    if (!video) {
+        showToast('Video not found!', 'error');
+        return;
+    }
     
     const videoIdYoutube = extractYouTubeId(video.video_url);
     
@@ -319,6 +375,9 @@ function playVideo(videoId) {
     const iframe = document.getElementById('modalYoutubePlayer');
     if (videoIdYoutube) {
         iframe.src = `https://www.youtube.com/embed/${videoIdYoutube}?enablejsapi=1&rel=0&modestbranding=1&controls=1&autoplay=1`;
+    } else {
+        showToast('Invalid video URL!', 'error');
+        return;
     }
     
     // Show modal with animation
@@ -328,6 +387,9 @@ function playVideo(videoId) {
         modal.style.opacity = '1';
         modal.style.transform = 'scale(1)';
     }, 50);
+    
+    // Prevent body scroll
+    document.body.style.overflow = 'hidden';
 }
 
 // Close video modal
@@ -339,82 +401,46 @@ function closeVideoModal() {
     setTimeout(() => {
         modal.classList.add('hidden');
         document.getElementById('modalYoutubePlayer').src = '';
+        document.body.style.overflow = 'auto';
     }, 300);
 }
 
-// Enhanced toast notification function
+// Enhanced Sweet Alert toast function
 function showToast(message, type = 'info') {
-    const toastContainer = document.getElementById('toast-container');
-    const toast = document.createElement('div');
-    
-    const toastId = 'toast-' + Date.now();
-    toast.id = toastId;
-    
-    let bgColor, icon, borderColor;
-    switch(type) {
-        case 'success':
-            bgColor = 'bg-gradient-to-r from-green-500 to-green-600';
-            borderColor = 'border-green-400';
-            icon = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                    </svg>`;
-            break;
-        case 'error':
-            bgColor = 'bg-gradient-to-r from-red-500 to-red-600';
-            borderColor = 'border-red-400';
-            icon = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>`;
-            break;
-        default:
-            bgColor = 'bg-gradient-to-r from-blue-500 to-blue-600';
-            borderColor = 'border-blue-400';
-            icon = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>`;
-    }
-    
-    toast.className = `${bgColor} ${borderColor} border-2 text-white px-4 sm:px-6 py-3 sm:py-4 rounded-xl shadow-2xl backdrop-blur-sm transform transition-all duration-500 ease-out translate-y-[-20px] opacity-0 max-w-sm sm:max-w-md`;
-    
-    toast.innerHTML = `
-        <div class="flex items-center gap-3">
-            <div class="flex-shrink-0">
-                ${icon}
-            </div>
-            <div class="flex-1">
-                <p class="font-semibold text-sm sm:text-base">${message}</p>
-            </div>
-            <button onclick="removeToast('${toastId}')" class="flex-shrink-0 ml-2 hover:bg-white/20 rounded-full p-1 transition-colors">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-            </button>
-        </div>
-    `;
-    
-    toastContainer.appendChild(toast);
-    
-    // Animate in
-    setTimeout(() => {
-        toast.classList.remove('translate-y-[-20px]', 'opacity-0');
-        toast.classList.add('translate-y-0', 'opacity-100');
-    }, 100);
-    
-    // Auto remove after 4 seconds
-    setTimeout(() => {
-        removeToast(toastId);
-    }, 4000);
-}
+    const config = {
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 4000,
+        timerProgressBar: true,
+        title: message,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        },
+        customClass: {
+            popup: 'heart-horizon-toast'
+        }
+    };
 
-// Remove toast function
-function removeToast(toastId) {
-    const toast = document.getElementById(toastId);
-    if (toast) {
-        toast.classList.add('translate-y-[-20px]', 'opacity-0', 'scale-95');
-        setTimeout(() => {
-            toast.remove();
-        }, 300);
+    if (type === 'success') {
+        config.icon = 'success';
+        config.background = 'linear-gradient(135deg, #065f46, #047857)';
+        config.color = '#fff';
+        config.iconColor = '#10b981';
+    } else if (type === 'error') {
+        config.icon = 'error';
+        config.background = 'linear-gradient(135deg, #7f1d1d, #991b1b)';
+        config.color = '#fff';
+        config.iconColor = '#ef4444';
+    } else {
+        config.icon = 'info';
+        config.background = 'linear-gradient(135deg, #1e3a8a, #1d4ed8)';
+        config.color = '#fff';
+        config.iconColor = '#3b82f6';
     }
+
+    Swal.fire(config);
 }
 
 // Close modal on escape key
@@ -424,16 +450,16 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-// Initialize modal styles
-document.addEventListener('DOMContentLoaded', function() {
-    const modal = document.getElementById('videoModal');
-    modal.style.opacity = '0';
-    modal.style.transform = 'scale(0.95)';
-    modal.style.transition = 'all 0.3s ease-out';
+// Close modal on click outside
+document.getElementById('videoModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeVideoModal();
+    }
 });
 </script>
 
 <style>
+/* Line clamp utilities */
 .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -467,7 +493,7 @@ document.addEventListener('DOMContentLoaded', function() {
     backface-visibility: hidden;
 }
 
-/* RESPONSIVE PLAY BUTTON - PERBAIKAN UTAMA */
+/* RESPONSIVE PLAY BUTTON */
 .play-button-overlay {
     position: absolute;
     inset: 0;
@@ -480,7 +506,7 @@ document.addEventListener('DOMContentLoaded', function() {
     transition: all 0.3s ease;
 }
 
-.play-button-overlay:hover {
+.video-card:hover .play-button-overlay {
     opacity: 1;
 }
 
@@ -507,57 +533,51 @@ document.addEventListener('DOMContentLoaded', function() {
 .play-button svg {
     width: clamp(16px, 3vw, 32px);
     height: clamp(16px, 3vw, 32px);
-    margin-left: 2px; /* Offset untuk visual centering */
+    margin-left: 2px;
     color: white;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
 
-/* Responsive breakpoints untuk play button */
+/* RESPONSIVE VIDEO MODAL */
+.video-container {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    overflow: hidden;
+    background: #000;
+}
+
+.responsive-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* Responsive modal adjustments */
 @media (max-width: 640px) {
-    .play-button {
-        width: 50px;
-        height: 50px;
+    #videoModal .bg-gradient-to-br {
+        margin: 0.5rem;
+        max-height: calc(100vh - 1rem);
     }
     
-    .play-button svg {
-        width: 20px;
-        height: 20px;
+    .video-container {
+        padding-bottom: 56.25%; /* Maintain 16:9 on mobile */
     }
 }
 
 @media (min-width: 641px) and (max-width: 1024px) {
-    .play-button {
-        width: 60px;
-        height: 60px;
-    }
-    
-    .play-button svg {
-        width: 24px;
-        height: 24px;
+    .video-container {
+        padding-bottom: 56.25%; /* Standard 16:9 for tablets */
     }
 }
 
-@media (min-width: 1025px) and (max-width: 1440px) {
-    .play-button {
-        width: 70px;
-        height: 70px;
-    }
-    
-    .play-button svg {
-        width: 28px;
-        height: 28px;
-    }
-}
-
-@media (min-width: 1441px) {
-    .play-button {
-        width: 80px;
-        height: 80px;
-    }
-    
-    .play-button svg {
-        width: 32px;
-        height: 32px;
+@media (min-width: 1025px) {
+    .video-container {
+        padding-bottom: 56.25%; /* Standard 16:9 for desktop */
     }
 }
 
@@ -588,22 +608,45 @@ document.addEventListener('DOMContentLoaded', function() {
     background: rgba(147, 51, 234, 0.7);
 }
 
-/* Aspect ratio container untuk konsistensi */
-.aspect-video {
-    position: relative;
-    width: 100%;
-    height: 0;
-    padding-bottom: 56.25%; /* 16:9 aspect ratio */
-    overflow: hidden;
+/* Sweet Alert Heart Horizon Theme */
+.heart-horizon-popup {
+    border: 2px solid #22c55e !important;
+    border-radius: 1rem !important;
+    box-shadow: 0 0 30px rgba(34, 197, 94, 0.3) !important;
+    backdrop-filter: blur(10px) !important;
 }
 
-.aspect-video > * {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+.heart-horizon-title {
+    font-family: 'Orbitron', sans-serif !important;
+    text-shadow: 0 0 10px rgba(34, 197, 94, 0.5) !important;
+}
+
+.heart-horizon-content {
+    font-family: 'Orbitron', sans-serif !important;
+}
+
+.heart-horizon-toast {
+    border: 1px solid rgba(34, 197, 94, 0.3) !important;
+    border-radius: 0.75rem !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3) !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+/* Enhanced aspect ratio for different screen sizes */
+@media (orientation: portrait) and (max-width: 768px) {
+    .video-container {
+        padding-bottom: 75%; /* Adjust for portrait mobile */
+    }
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+    #videoModal .bg-gradient-to-br {
+        max-height: 95vh;
+    }
+    
+    .video-container {
+        padding-bottom: 50%; /* Adjust for landscape mobile */
+    }
 }
 </style>
 

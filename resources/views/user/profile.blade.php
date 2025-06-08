@@ -1,9 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
-
 <div class="bg-gradient-to-br from-[#002c14] via-[#000000] to-[#002c14] min-h-screen text-white">
     <div class="container mx-auto px-4 py-8">
         
@@ -94,9 +91,6 @@
                                    required
                                    class="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-green-500 focus:outline-none transition-colors"
                                    placeholder="Enter your full name">
-                            @error('name')
-                                <span class="text-red-400 text-sm mt-1 block">{{ $message }}</span>
-                            @enderror
                         </div>
                         
                         <!-- Relationship Status -->
@@ -114,9 +108,6 @@
                                 <option value="diselingkuhin" {{ old('status', $user->profile->status ?? '') == 'diselingkuhin' ? 'selected' : '' }}>💔 Diselingkuhin</option>
                                 <option value="gamon" {{ old('status', $user->profile->status ?? '') == 'gamon' ? 'selected' : '' }}>🎭 Gamon</option>
                             </select>
-                            @error('status')
-                                <span class="text-red-400 text-sm mt-1 block">{{ $message }}</span>
-                            @enderror
                         </div>
 
                         <!-- Gender -->
@@ -136,9 +127,6 @@
                                     <span class="text-white">Other</span>
                                 </label>
                             </div>
-                            @error('gender')
-                                <span class="text-red-400 text-sm mt-1 block">{{ $message }}</span>
-                            @enderror
                         </div>
 
                         <!-- Age -->
@@ -148,9 +136,6 @@
                                    value="{{ old('age', $user->profile->age ?? '') }}"
                                    class="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-green-500 focus:outline-none transition-colors"
                                    placeholder="Enter your age">
-                            @error('age')
-                                <span class="text-red-400 text-sm mt-1 block">{{ $message }}</span>
-                            @enderror
                         </div>
 
                         <!-- Bio -->
@@ -159,18 +144,19 @@
                             <textarea name="bio" rows="4" 
                                       class="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-green-500 focus:outline-none resize-none transition-colors"
                                       placeholder="Tell us about yourself...">{{ old('bio', $user->profile->bio ?? '') }}</textarea>
-                            @error('bio')
-                                <span class="text-red-400 text-sm mt-1 block">{{ $message }}</span>
-                            @enderror
                         </div>
                     </div>
 
                     <!-- Submit Button -->
                     <div class="mt-8 flex gap-4">
                         <button type="submit" id="submitBtn" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-lg transition-colors">
-                            Save Changes
+                            @if($user->profile)
+                                Update Profile
+                            @else
+                                Create Profile
+                            @endif
                         </button>
-                        <button type="button" id="cancelBtn" class="px-6 bg-gray-600 hover:bg-gray-700 text-white font-semibold py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                        <button type="button" id="cancelBtn" class="px-6 bg-gray-600 hover:bg-gray-700 text-white font-semibold py-3 rounded-lg transition-colors">
                             Cancel
                         </button>
                     </div>
@@ -182,147 +168,72 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM Content Loaded - Initializing profile page');
+    
     const profileForm = document.getElementById('profileForm');
     const profilePictureInput = document.getElementById('profile_picture_input');
     const submitBtn = document.getElementById('submitBtn');
     const cancelBtn = document.getElementById('cancelBtn');
     
-    // Track if form has been saved
+    if (!profileForm || !submitBtn || !cancelBtn) {
+        console.error('Required elements not found!');
+        return;
+    }
+    
+    console.log('All elements found successfully');
+    
     let isSaved = false;
     let hasChanges = false;
-    
-    // Store original form values
-    const originalValues = {};
-    
-    // Capture original form values on page load
-    function captureOriginalValues() {
-        const formData = new FormData(profileForm);
-        for (let [key, value] of formData.entries()) {
-            originalValues[key] = value;
-        }
-        
-        // Capture name input
-        const nameInput = document.querySelector('input[name="name"]');
-        originalValues['name'] = nameInput.value;
-        
-        // Capture radio button values
-        const genderRadios = document.querySelectorAll('input[name="gender"]');
-        genderRadios.forEach(radio => {
-            if (radio.checked) {
-                originalValues['gender'] = radio.value;
+
+    // Profile picture preview
+    if (profilePictureInput) {
+        profilePictureInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const avatarContainer = document.querySelector('.w-32.h-32');
+                    if (avatarContainer) {
+                        avatarContainer.innerHTML = `<img src="${e.target.result}" alt="Profile Picture" class="w-full h-full object-cover rounded-full">`;
+                    }
+                };
+                reader.readAsDataURL(file);
+                hasChanges = true;
             }
         });
-        
-        // Capture select value
-        const statusSelect = document.querySelector('select[name="status"]');
-        originalValues['status'] = statusSelect.value;
-        
-        console.log('Original values captured:', originalValues);
     }
-    
-    // Check if form has changes
-    function checkForChanges() {
-        const currentFormData = new FormData(profileForm);
-        let changed = false;
-        
-        // Check name input
-        const nameInput = document.querySelector('input[name="name"]');
-        if (originalValues['name'] !== nameInput.value) {
-            changed = true;
-        }
-        
-        // Check text inputs and textarea
-        for (let [key, value] of currentFormData.entries()) {
-            if (key !== 'profile_picture' && key !== 'name' && originalValues[key] !== value) {
-                changed = true;
-                break;
-            }
-        }
-        
-        // Check radio buttons
-        const genderRadios = document.querySelectorAll('input[name="gender"]');
-        let currentGender = '';
-        genderRadios.forEach(radio => {
-            if (radio.checked) {
-                currentGender = radio.value;
-            }
-        });
-        if (originalValues['gender'] !== currentGender) {
-            changed = true;
-        }
-        
-        // Check select
-        const statusSelect = document.querySelector('select[name="status"]');
-        if (originalValues['status'] !== statusSelect.value) {
-            changed = true;
-        }
-        
-        // Check if profile picture was changed
-        if (profilePictureInput.files.length > 0) {
-            changed = true;
-        }
-        
-        hasChanges = changed;
-        
-        // Update cancel button state
-        if (isSaved) {
-            cancelBtn.disabled = true;
-            cancelBtn.textContent = 'Saved';
-            cancelBtn.classList.add('bg-green-600', 'hover:bg-green-600');
-            cancelBtn.classList.remove('bg-gray-600', 'hover:bg-gray-700');
-        } else {
-            cancelBtn.disabled = false;
-            cancelBtn.textContent = 'Cancel';
-            cancelBtn.classList.remove('bg-green-600', 'hover:bg-green-600');
-            cancelBtn.classList.add('bg-gray-600', 'hover:bg-gray-700');
-        }
-        
-        console.log('Has changes:', hasChanges);
-    }
-    
-    // Initialize
-    captureOriginalValues();
-    
-    // Add event listeners to form inputs to detect changes
-    const formInputs = profileForm.querySelectorAll('input, select, textarea');
-    formInputs.forEach(input => {
-        input.addEventListener('input', checkForChanges);
-        input.addEventListener('change', checkForChanges);
-    });
 
-    // Handle profile picture change
-    profilePictureInput.addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const avatarContainer = document.querySelector('.w-32.h-32');
-                avatarContainer.innerHTML = `<img src="${e.target.result}" alt="Profile Picture" class="w-full h-full object-cover rounded-full">`;
-            };
-            reader.readAsDataURL(file);
-            checkForChanges(); // Check for changes after file selection
-        }
-    });
-
-    // Handle form submission
+    // Form submission dengan Global Sweet Alert
     profileForm.addEventListener('submit', function(e) {
         e.preventDefault();
+        console.log('Form submitted');
         
         const formData = new FormData(this);
         
-        // Cek CSRF token
         const csrfTokenElement = document.querySelector('meta[name="csrf-token"]');
         
         if (!csrfTokenElement) {
-            showToast('Please refresh the page and try again.', 'error');
+            // GUNAKAN GLOBAL FUNCTION
+            if (typeof window.showAlert === 'function') {
+                window.showAlert('Please refresh the page and try again.', 'error');
+            } else {
+                alert('Please refresh the page and try again.');
+            }
             return;
         }
         
-        // Disable button and show loading
         submitBtn.disabled = true;
         submitBtn.textContent = 'Saving...';
         
-        fetch('{{ route("user.profile.update") }}', {
+        const updateRoute = @if($user->profile) 
+            '{{ route("user.profile.update") }}' 
+        @else 
+            '{{ route("profile.setup") }}'
+        @endif;
+        
+        console.log('Sending request to:', updateRoute);
+        
+        fetch(updateRoute, {
             method: 'POST',
             body: formData,
             headers: {
@@ -330,95 +241,115 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .then(response => {
+            console.log('Response status:', response.status);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             return response.json();
         })
         .then(data => {
+            console.log('Response data:', data);
             if (data.success) {
-                showToast('Profile updated successfully!', 'success');
-                
-                // Update nama di header jika berubah
-                const nameInput = document.querySelector('input[name="name"]');
-                const nameDisplay = document.getElementById('userNameDisplay');
-                if (nameDisplay && nameInput) {
-                    nameDisplay.textContent = nameInput.value;
+                // GUNAKAN GLOBAL FUNCTION
+                if (typeof window.showAlert === 'function') {
+                    window.showAlert('Profile saved successfully!', 'success').then(() => {
+                        window.location.href = '{{ route("dashboard.index") }}';
+                    });
+                } else {
+                    alert('Profile saved successfully!');
+                    window.location.href = '{{ route("dashboard.index") }}';
                 }
                 
-                // Mark as saved and update button states
                 isSaved = true;
                 hasChanges = false;
-                
-                // Update cancel button
-                cancelBtn.disabled = true;
-                cancelBtn.textContent = 'Saved';
-                cancelBtn.classList.add('bg-green-600', 'hover:bg-green-600');
-                cancelBtn.classList.remove('bg-gray-600', 'hover:bg-gray-700');
-                
-                // Update original values with new saved values
-                captureOriginalValues();
-                
-                // Optionally reload page to show updated data after delay
-                setTimeout(() => {
-                    location.reload();
-                }, 2000);
             } else {
-                showToast(data.message || 'Error updating profile', 'error');
+                // GUNAKAN GLOBAL FUNCTION
+                if (typeof window.showAlert === 'function') {
+                    window.showAlert(data.message || 'Error saving profile', 'error');
+                } else {
+                    alert('Error: ' + (data.message || 'Error saving profile'));
+                }
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            showToast('Something went wrong!', 'error');
+            // GUNAKAN GLOBAL FUNCTION
+            if (typeof window.showAlert === 'function') {
+                window.showAlert('Something went wrong! Please try again.', 'error');
+            } else {
+                alert('Something went wrong! Please try again.');
+            }
         })
         .finally(() => {
             submitBtn.disabled = false;
-            submitBtn.textContent = 'Save Changes';
+            submitBtn.textContent = @if($user->profile) 'Update Profile' @else 'Create Profile' @endif;
         });
     });
 
-    // Handle cancel button
+    // Cancel button dengan Global Sweet Alert
     cancelBtn.addEventListener('click', function() {
+        console.log('Cancel button clicked');
+        
         if (isSaved) {
-            // If already saved, button should be disabled (this shouldn't happen)
+            window.location.href = '{{ route("dashboard.index") }}';
             return;
         }
         
         if (hasChanges) {
-            // Show alert for unsaved changes
-            if (confirm('You have unsaved changes. Are you sure you want to cancel and return to dashboard? All changes will be lost.')) {
-                showToast('Changes cancelled. Returning to dashboard...', 'info');
-                setTimeout(() => {
+            // GUNAKAN GLOBAL FUNCTION
+            if (typeof window.confirmAction === 'function') {
+                window.confirmAction(
+                    'Unsaved Changes', 
+                    'You have unsaved changes. Are you sure you want to leave?',
+                    'Yes, leave',
+                    'Stay here'
+                ).then((confirmed) => {
+                    if (confirmed) {
+                        window.location.href = '{{ route("dashboard.index") }}';
+                    }
+                });
+            } else {
+                if (confirm('You have unsaved changes. Are you sure you want to leave?')) {
                     window.location.href = '{{ route("dashboard.index") }}';
-                }, 1000);
+                }
             }
         } else {
-            // No changes, just go back
             window.location.href = '{{ route("dashboard.index") }}';
         }
     });
 
-    // Toast notification function
-    function showToast(message, type = 'info') {
-        const toast = document.createElement('div');
-        toast.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg text-white font-semibold shadow-lg ${
-            type === 'success' ? 'bg-green-600' : 
-            type === 'error' ? 'bg-red-600' : 
-            type === 'info' ? 'bg-blue-600' : 'bg-gray-600'
-        }`;
-        toast.textContent = message;
-        
-        document.body.appendChild(toast);
-        
-        // Auto remove after 3 seconds
-        setTimeout(() => {
-            toast.remove();
-        }, 3000);
-    }
+    // Track changes
+    const formInputs = profileForm.querySelectorAll('input, select, textarea');
+    formInputs.forEach(input => {
+        if (input) {
+            input.addEventListener('input', () => { hasChanges = true; });
+            input.addEventListener('change', () => { hasChanges = true; });
+        }
+    });
+    
+    console.log('Profile page initialized successfully');
 });
 </script>
 
+
 <style>
+/* Sweet Alert Heart Horizon Theme */
+.swal2-popup {
+    border: 2px solid #22c55e !important;
+    border-radius: 1rem !important;
+    box-shadow: 0 0 30px rgba(34, 197, 94, 0.3) !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+.swal2-title {
+    font-family: 'Orbitron', sans-serif !important;
+    text-shadow: 0 0 10px rgba(34, 197, 94, 0.5) !important;
+}
+
+.swal2-content {
+    font-family: 'Orbitron', sans-serif !important;
+}
+
 /* Radio button styling */
 input[type="radio"]:checked {
     background-color: #22c55e;
@@ -427,24 +358,6 @@ input[type="radio"]:checked {
 
 input[type="radio"]:focus {
     box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
-}
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-    width: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.1);
-}
-
-::-webkit-scrollbar-thumb {
-    background: rgba(34, 197, 94, 0.3);
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: rgba(34, 197, 94, 0.5);
 }
 </style>
 

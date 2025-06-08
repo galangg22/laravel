@@ -1,526 +1,425 @@
 @extends('layouts.app')
 
-@section('title', 'Register - Heart Horizon Class')
+@section('title', 'Register - Heart Horizon')
 
 @section('content')
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
-    
-body {
-    font-family: 'Poppins', sans-serif;
-    background: #000;
-}
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(135deg, #002c14 0%, #000 50%, #002c14 100%);
+        min-height: 100vh;
+    }
 
-@keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-15px); }
-}
+    /* Minimal Animations */
+    @keyframes fadeIn {
+        0% { opacity: 0; transform: translateY(20px); }
+        100% { opacity: 1; transform: translateY(0); }
+    }
 
-@keyframes heartbeat {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-}
+    @keyframes slideUp {
+        0% { opacity: 0; transform: translateY(30px); }
+        100% { opacity: 1; transform: translateY(0); }
+    }
 
-@keyframes sparkle {
-    0%, 100% { opacity: 0.3; transform: scale(0.8) rotate(0deg); }
-    50% { opacity: 1; transform: scale(1.2) rotate(180deg); }
-}
+    .animate-fadeIn {
+        animation: fadeIn 0.6s ease-out forwards;
+    }
 
-@keyframes slideInLeft {
-    0% { opacity: 0; transform: translateX(-50px); }
-    100% { opacity: 1; transform: translateX(0); }
-}
+    .animate-slideUp {
+        animation: slideUp 0.8s ease-out forwards;
+    }
 
-@keyframes slideInRight {
-    0% { opacity: 0; transform: translateX(50px); }
-    100% { opacity: 1; transform: translateX(0); }
-}
+    /* Simple Card */
+    .simple-card {
+        background: rgba(0, 44, 20, 0.15);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(0, 255, 136, 0.2);
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
 
-@keyframes fadeIn {
-    0% { opacity: 0; transform: translateY(20px); }
-    100% { opacity: 1; transform: translateY(0); }
-}
+    /* Clean Input */
+    .clean-input {
+        background: rgba(0, 0, 0, 0.4);
+        border: 2px solid rgba(0, 255, 136, 0.3);
+        border-radius: 12px;
+        color: #ffffff;
+        padding: 14px 18px;
+        font-size: 15px;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
 
-@keyframes gradientShift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
+    .clean-input:focus {
+        outline: none;
+        border-color: #00ff88;
+        background: rgba(0, 44, 20, 0.3);
+        box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.1);
+    }
 
-.animate-float {
-    animation: float 6s ease-in-out infinite;
-}
+    .clean-input::placeholder {
+        color: rgba(0, 255, 136, 0.6);
+    }
 
-.animate-heartbeat {
-    animation: heartbeat 2s ease-in-out infinite;
-}
-
-.animate-sparkle {
-    animation: sparkle 4s ease-in-out infinite;
-}
-
-.animate-slideInLeft {
-    animation: slideInLeft 0.8s ease-out forwards;
-}
-
-.animate-slideInRight {
-    animation: slideInRight 0.8s ease-out forwards;
-}
-
-.animate-fadeIn {
-    animation: fadeIn 0.6s ease-out forwards;
-}
-
-.love-gradient {
-    background: linear-gradient(135deg, #002c14 0%, #00ff88 50%, #ffffff 100%);
-    background-size: 200% 200%;
-    animation: gradientShift 4s ease infinite;
-}
-
-.teen-gradient {
-    background: linear-gradient(135deg, #002c14 0%, #000 100%);
-}
-
-.glass-effect {
-    backdrop-filter: blur(15px);
-    background: rgba(0, 44, 20, 0.85);
-    border: 1px solid rgba(0, 255, 136, 0.2);
-    box-shadow: 0 8px 32px 0 rgba(0, 44, 20, 0.25);
-}
-
-.input-enhanced {
-    transition: all 0.3s ease;
-    position: relative;
-    background: rgba(0, 0, 0, 0.7);
-    color: #fff;
-    border-color: #002c14;
-}
-
-.input-enhanced:focus {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(0, 255, 136, 0.25) !important;
-    border-color: #00ff88 !important;
-    background: rgba(0, 44, 20, 0.8);
-    color: #fff;
-}
-
-.input-enhanced::placeholder {
-    color: #00ff88;
-    opacity: 0.7;
-}
-
-/* Tombol registrasi */
-.btn-enhanced {
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-    background: linear-gradient(90deg, #00ff88 0%, #00d96e 100%); /* Gradien lebih terang */
-    color: #fff;
-    border: none;
-}
-
-/* Efek Hover */
-.btn-enhanced:hover:not(:disabled) {
-    transform: translateY(-3px);
-    box-shadow: 0 15px 35px rgba(0, 255, 136, 0.4);
-    background: linear-gradient(90deg, #00d96e 0%, #00ff88 100%); /* Hover lebih cerah */
-}
-
-/* Efek saat tombol aktif, setelah centang checkbox */
-.btn-enhanced:enabled {
-    background: linear-gradient(90deg, #00ff88 0%, #00d96e 100%);
-}
-
-/* Efek saat tombol nonaktif (disabled) */
-.btn-enhanced:disabled {
-    background: rgba(0, 255, 136, 0.2);
-    color: rgba(0, 255, 136, 0.5);
-    cursor: not-allowed;
-}
-
-/* Animasi saat tombol aktif */
-.btn-enhanced::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.08), transparent);
-    transition: left 0.5s;
-}
-
-/* Hover efek tombol */
-.btn-enhanced:hover::before {
-    left: 100%;
-}
-
-/* Mengatur transisi saat tombol dalam status disabled */
-.btn-enhanced:disabled:hover {
-    transform: none;
-    box-shadow: none;
-}
-
-
-.back-btn {
-    background: rgba(0, 44, 20, 0.8);
-    border: 1px solid #00ff88;
-    color: #00ff88;
-    padding: 8px 12px;
-    border-radius: 50%;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    font-size: 18px;
-    font-weight: bold;
-}
-
-.back-btn:hover {
-    background: rgba(0, 255, 136, 0.2);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0, 255, 136, 0.3);
-    color: #fff;
-    border-color: #fff;
-}
-
-.floating-hearts {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    pointer-events: none;
-}
-
-.floating-heart {
-    position: absolute;
-    color: rgba(0, 255, 136, 0.18);
-    font-size: 1rem;
-    animation: float 8s ease-in-out infinite;
-    filter: drop-shadow(0 2px 8px #002c14);
-}
-
-.floating-heart:nth-child(1) { left: 10%; animation-delay: 0s; }
-.floating-heart:nth-child(2) { left: 20%; animation-delay: 1s; }
-.floating-heart:nth-child(3) { left: 30%; animation-delay: 2s; }
-.floating-heart:nth-child(4) { left: 40%; animation-delay: 3s; }
-.floating-heart:nth-child(5) { left: 50%; animation-delay: 4s; }
-.floating-heart:nth-child(6) { left: 60%; animation-delay: 5s; }
-.floating-heart:nth-child(7) { left: 70%; animation-delay: 6s; }
-.floating-heart:nth-child(8) { left: 80%; animation-delay: 7s; }
-.floating-heart:nth-child(9) { left: 90%; animation-delay: 8s; }
-
-.label-enhanced {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    font-weight: 600;
-    color: #00ff88;
-    margin-bottom: 0.5rem;
-}
-
-.label-enhanced::before {
-    content: '💚';
-    margin-right: 0.5rem;
-    font-size: 0.875rem;
-}
-
-.checkbox-enhanced {
-    position: relative;
-    appearance: none;
-    width: 1.25rem;
-    height: 1.25rem;
-    border: 2px solid #00ff88;
-    border-radius: 0.375rem;
-    background: #000;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.checkbox-enhanced:checked {
-    background: linear-gradient(135deg, #002c14, #00ff88);
-    border-color: #00ff88;
-}
-
-.checkbox-enhanced:checked::after {
-    content: '✓';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: #fff;
-    font-size: 0.875rem;
-    font-weight: bold;
-}
-
-.form-container {
-    position: relative;
-    z-index: 10;
-}
-
-.background-enhanced {
-    background: linear-gradient(135deg, #002c14 0%, #000 50%, #002c14 100%);
-    background-size: 400% 400%;
-    animation: gradientShift 8s ease infinite;
-    position: relative;
-    overflow: hidden;
-}
-
-.background-enhanced::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="hearts" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><text x="10" y="15" text-anchor="middle" fill="rgba(0,255,136,0.04)" font-size="12">💚</text></pattern></defs><rect width="100" height="100" fill="url(%23hearts)"/></svg>');
-    opacity: 0.1;
-}
-
-/* Color overrides for the new theme */
-.text-gray-800, .text-gray-700, .text-gray-600, .text-gray-500 {
-    color: #00ff88 !important;
-}
-
-.text-pink-600, .text-pink-800, .text-pink-900 {
-    color: #00ff88 !important;
-}
-
-.text-red-500 {
-    color: #ff6b6b !important;
-}
-
-.text-green-700 {
-    color: #00ff88 !important;
-}
-
-.text-yellow-300 {
-    color: #ffffff !important;
-}
-
-.bg-green-100, .bg-green-700 {
-    background: rgba(0, 44, 20, 0.2) !important;
-}
-
-.border-green-300 {
-    border-color: #00ff88 !important;
-}
-
-.border-pink-200, .border-purple-200, .border-indigo-200 {
-    border-color: #00ff88 !important;
-}
-
-.rounded-2xl, .rounded-3xl {
-    border-radius: 1.5rem !important;
-}
-
-.shadow-2xl {
-    box-shadow: 0 8px 32px 0 rgba(0, 44, 20, 0.25) !important;
-}
-
-a.relative.group {
-    color: #00ff88 !important;
-}
-
-a.relative.group span {
-    background: #00ff88 !important;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .back-btn {
-        width: 36px;
-        height: 36px;
+    /* Simple Button */
+    .simple-btn {
+        background: linear-gradient(135deg, #00ff88 0%, #00d96e 100%);
+        border: none;
+        border-radius: 12px;
+        color: #000;
+        font-weight: 600;
+        padding: 16px 24px;
+        transition: all 0.3s ease;
+        width: 100%;
         font-size: 16px;
     }
-    
-    .glass-effect {
-        margin: 0 10px;
-        padding: 2rem;
-    }
-    
-    .floating-heart {
-        font-size: 1.2rem;
-    }
-}
 
-@media (max-width: 640px) {
-    .glass-effect {
-        padding: 1.5rem;
+    .simple-btn:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 255, 136, 0.3);
+        background: linear-gradient(135deg, #00d96e 0%, #00ff88 100%);
     }
-}
+
+    .simple-btn:disabled {
+        background: rgba(0, 255, 136, 0.2);
+        color: rgba(0, 255, 136, 0.5);
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+
+    /* Clean Checkbox */
+    .clean-checkbox {
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        border: 2px solid #00ff88;
+        border-radius: 4px;
+        background: transparent;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        flex-shrink: 0;
+    }
+
+    .clean-checkbox:checked {
+        background: #00ff88;
+        border-color: #00ff88;
+    }
+
+    .clean-checkbox:checked::after {
+        content: '✓';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #000;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    /* Simple Typography */
+    .simple-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #ffffff;
+        margin-bottom: 0.5rem;
+        text-align: center;
+    }
+
+    .simple-subtitle {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 1.1rem;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .simple-label {
+        color: #00ff88;
+        font-weight: 500;
+        font-size: 14px;
+        margin-bottom: 6px;
+        display: block;
+    }
+
+    /* Back Button */
+    .back-btn {
+        background: rgba(0, 44, 20, 0.6);
+        border: 1px solid #00ff88;
+        color: #00ff88;
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+
+    .back-btn:hover {
+        background: rgba(0, 255, 136, 0.2);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 255, 136, 0.2);
+    }
+
+    /* Feature List */
+    .feature-list {
+        background: rgba(0, 44, 20, 0.2);
+        border-radius: 16px;
+        padding: 24px;
+        border: 1px solid rgba(0, 255, 136, 0.1);
+    }
+
+    .feature-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 14px;
+        margin-bottom: 12px;
+    }
+
+    .feature-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .feature-icon {
+        color: #00ff88;
+        font-size: 16px;
+        width: 20px;
+        text-align: center;
+    }
+
+    /* Error States */
+    .error-input {
+        border-color: #ff6b6b !important;
+        background: rgba(255, 107, 107, 0.1) !important;
+    }
+
+    .error-text {
+        color: #ff6b6b;
+        font-size: 13px;
+        margin-top: 4px;
+    }
+
+    /* Success Message */
+    .success-message {
+        background: rgba(0, 255, 136, 0.1);
+        border: 1px solid rgba(0, 255, 136, 0.3);
+        border-radius: 12px;
+        padding: 16px;
+        color: #00ff88;
+        margin-top: 20px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .simple-title {
+            font-size: 2rem;
+        }
+        
+        .simple-card {
+            margin: 16px;
+            border-radius: 16px;
+        }
+        
+        .feature-list {
+            padding: 20px;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .simple-card {
+            padding: 24px !important;
+        }
+        
+        .simple-title {
+            font-size: 1.75rem;
+        }
+    }
 </style>
 
-<div class="min-h-screen flex items-center justify-center background-enhanced px-4 py-12">
-    <!-- Floating Hearts Background -->
-    <div class="floating-hearts">
-        <div class="floating-heart">💕</div>
-        <div class="floating-heart">💖</div>
-        <div class="floating-heart">💝</div>
-        <div class="floating-heart">💗</div>
-        <div class="floating-heart">💓</div>
-        <div class="floating-heart">💕</div>
-        <div class="floating-heart">💖</div>
-        <div class="floating-heart">💝</div>
-        <div class="floating-heart">💗</div>
-    </div>
-
-    <div class="glass-effect rounded-3xl shadow-2xl max-w-4xl w-full flex flex-col md:flex-row overflow-hidden form-container animate-fadeIn">
+<div class="min-h-screen flex items-center justify-center px-4 py-8">
+    <div class="simple-card max-w-5xl w-full flex flex-col lg:flex-row overflow-hidden animate-fadeIn">
         
-        <!-- Back Button Inside Content -->
-        <div class="absolute top-4 left-4 z-20">
-            <a href="{{ route('welcome') }}" class="back-btn animate-fadeIn">
-                <
+        <!-- Back Button -->
+        <div class="absolute top-6 left-6 z-20">
+            <a href="{{ route('welcome') }}" class="back-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
             </a>
         </div>
         
-        <!-- Animasi Sisi Kiri -->
-        <div class="md:w-1/2 relative love-gradient flex items-center justify-center p-8 animate-slideInLeft">
-            <div class="absolute rounded-full bg-green-700 opacity-20 w-40 h-40 top-10 left-10 animate-float"></div>
-            <div class="absolute rounded-full bg-green-700 opacity-20 w-24 h-24 bottom-10 right-10 animate-heartbeat"></div>
-            <div class="absolute rounded-full bg-green-700 opacity-15 w-32 h-32 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 animate-float" style="animation-delay: 2s;"></div>
-            
-            <div class="relative z-10 text-white text-center mt-12 md:mt-0">
-                <div class="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-6 animate-heartbeat">
-                    <span class="text-3xl">💕</span>
+        <!-- Left Side - Info -->
+        <div class="lg:w-2/5 p-8 lg:p-12 flex flex-col justify-center animate-slideUp">
+            <div class="text-center lg:text-left mb-8">
+                <div class="w-20 h-20 bg-gradient-to-br from-green-500/20 to-green-600/20 border-2 border-green-500/30 rounded-2xl flex items-center justify-center mx-auto lg:mx-0 mb-6">
+                    <span class="text-3xl">💚</span>
                 </div>
-                <h2 class="text-3xl font-bold mb-4">Bergabunglah dengan Heart Horizon Class</h2>
-                <p class="text-white leading-relaxed">Platform pembelajaran percintaan sehat terbaik untuk remaja Indonesia. Join 5,000+ teens yang udah belajar cinta sehat! ✨</p>
                 
-                <div class="mt-8 space-y-3">
-                    <div class="flex items-center justify-center space-x-3 text-sm">
-                        <span class="text-yellow-300">✓</span>
-                        <span>100% Gratis & Aman</span>
-                    </div>
-                    <div class="flex items-center justify-center space-x-3 text-sm">
-                        <span class="text-yellow-300">✓</span>
-                        <span>Materi dari Psikolog Expert</span>
-                    </div>
-                    <div class="flex items-center justify-center space-x-3 text-sm">
-                        <span class="text-yellow-300">✓</span>
-                        <span>Komunitas Supportif</span>
-                    </div>
+                <h2 class="text-3xl font-bold text-white mb-4">Heart Horizon</h2>
+                <p class="text-gray-300 text-lg leading-relaxed">
+                    Platform pembelajaran percintaan sehat untuk remaja Indonesia
+                </p>
+            </div>
+            
+            <div class="feature-list">
+                <div class="feature-item">
+                    <span class="feature-icon">✓</span>
+                    <span>100% Gratis & Aman</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">✓</span>
+                    <span>Materi dari Psikolog Expert</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">✓</span>
+                    <span>Komunitas Supportif</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">✓</span>
+                    <span>5,000+ Remaja Bergabung</span>
                 </div>
             </div>
         </div>
 
-        <!-- Form Registrasi -->
-        <div class="md:w-1/2 p-10 animate-slideInRight">
-            <div class="text-center mb-8 mt-8 md:mt-0">
-                <h3 class="text-2xl font-semibold text-white mb-2">Buat Akun Baru</h3>
-                <p class="text-gray-300">Mulai journey cinta sehat kamu hari ini! 🌟</p>
-            </div>
-            
-            <form method="POST" action="{{ route('register.submit') }}" id="registerForm" class="space-y-6">
-                @csrf
-                <div class="animate-fadeIn" style="animation-delay: 0.1s;">
-                    <label for="name" class="label-enhanced">Nama Lengkap</label>
-                    <input type="text" id="name" name="name" value="{{ old('name') }}" required
-                        class="input-enhanced w-full px-4 py-3 border-2 rounded-2xl focus:outline-none focus:ring-0 @error('name') border-red-500 @enderror"
-                        placeholder="Siapa nama kamu?" />
-                    @error('name')
-                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <div class="animate-fadeIn" style="animation-delay: 0.2s;">
-                    <label for="email" class="label-enhanced">Email</label>
-                    <input type="email" id="email" name="email" value="{{ old('email') }}" required
-                        class="input-enhanced w-full px-4 py-3 border-2 rounded-2xl focus:outline-none focus:ring-0 @error('email') border-red-500 @enderror"
-                        placeholder="Email kamu" />
-                    @error('email')
-                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <div class="animate-fadeIn" style="animation-delay: 0.3s;">
-                    <label for="phone_number" class="label-enhanced">Nomor Telepon</label>
-                    <input type="text" id="phone_number" name="phone_number" value="{{ old('phone_number') }}" required
-                        class="input-enhanced w-full px-4 py-3 border-2 rounded-2xl focus:outline-none focus:ring-0 @error('phone_number') border-red-500 @enderror"
-                        placeholder="Nomor WA kamu" />
-                    @error('phone_number')
-                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <div class="animate-fadeIn" style="animation-delay: 0.4s;">
-                    <label for="password" class="label-enhanced">Password</label>
-                    <input type="password" id="password" name="password" required
-                        class="input-enhanced w-full px-4 py-3 border-2 rounded-2xl focus:outline-none focus:ring-0 @error('password') border-red-500 @enderror"
-                        placeholder="Buat password yang kuat" />
-                    @error('password')
-                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <div class="animate-fadeIn" style="animation-delay: 0.5s;">
-                    <label for="password_confirmation" class="label-enhanced">Konfirmasi Password</label>
-                    <input type="password" id="password_confirmation" name="password_confirmation" required
-                        class="input-enhanced w-full px-4 py-3 border-2 rounded-2xl focus:outline-none focus:ring-0"
-                        placeholder="Ulangi password kamu" />
-                </div>
-
-                <div class="flex items-start space-x-3 animate-fadeIn" style="animation-delay: 0.6s;">
-                    <input id="terms" type="checkbox" class="checkbox-enhanced mt-1" />
-                    <label for="terms" class="text-sm text-white leading-relaxed">
-                        Saya setuju dengan <a href="#" class="text-green-400 hover:text-green-300 font-semibold transition-colors">Syarat dan Ketentuan</a> Heart Horizon Class dan siap untuk belajar cinta sehat! 💕
-                    </label>
-                </div>
-
-                <button type="submit" disabled id="submitBtn"
-                    class="btn-enhanced w-full py-4 love-gradient text-white rounded-2xl font-bold shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 animate-fadeIn"
-                    style="animation-delay: 0.7s;">
-                    <span class="relative z-10">💕 Daftar & Mulai Journey Cinta Sehat!</span>
-                </button>
-            </form>
-
-            @if(session('status'))
-                <div class="mt-4 p-4 bg-green-100 border border-green-300 text-green-700 rounded-2xl animate-fadeIn">
-                    <div class="flex items-center">
-                        <span class="mr-2">✅</span>
-                        {{ session('status') }}
+        <!-- Right Side - Form -->
+        <div class="lg:w-3/5 p-8 lg:p-12">
+            <div class="max-w-md mx-auto">
+                <h3 class="simple-title">Daftar Sekarang</h3>
+                <p class="simple-subtitle">Mulai journey cinta sehat kamu hari ini</p>
+                
+                <form method="POST" action="{{ route('register.submit') }}" id="registerForm" class="space-y-5">
+                    @csrf
+                    
+                    <div>
+                        <label for="name" class="simple-label">Nama Lengkap</label>
+                        <input type="text" id="name" name="name" value="{{ old('name') }}" required
+                            class="clean-input @error('name') error-input @enderror"
+                            placeholder="Masukkan nama lengkap" />
+                        @error('name')
+                            <p class="error-text">{{ $message }}</p>
+                        @enderror
                     </div>
-                </div>
-            @endif
 
-            <div class="mt-6 text-center animate-fadeIn" style="animation-delay: 0.8s;">
-                <p class="text-gray-300">
-                    Sudah punya akun?
-                    <a href="{{ route('login.form') }}" class="text-green-400 hover:text-green-300 font-semibold transition-colors relative group">
-                        Masuk di sini
-                        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-green-400 group-hover:w-full transition-all duration-300"></span>
-                    </a>
-                </p>
-                <p class="text-sm text-gray-400 mt-2">
-                    <span class="mr-1">🌟</span>
-                    Join 5,000+ remaja yang udah belajar cinta sehat!
-                </p>
+                    <div>
+                        <label for="email" class="simple-label">Email</label>
+                        <input type="email" id="email" name="email" value="{{ old('email') }}" required
+                            class="clean-input @error('email') error-input @enderror"
+                            placeholder="nama@email.com" />
+                        @error('email')
+                            <p class="error-text">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label for="phone_number" class="simple-label">Nomor Telepon</label>
+                        <input type="text" id="phone_number" name="phone_number" value="{{ old('phone_number') }}" required
+                            class="clean-input @error('phone_number') error-input @enderror"
+                            placeholder="08xxxxxxxxxx" />
+                        @error('phone_number')
+                            <p class="error-text">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label for="password" class="simple-label">Password</label>
+                        <input type="password" id="password" name="password" required
+                            class="clean-input @error('password') error-input @enderror"
+                            placeholder="Minimal 8 karakter" />
+                        @error('password')
+                            <p class="error-text">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label for="password_confirmation" class="simple-label">Konfirmasi Password</label>
+                        <input type="password" id="password_confirmation" name="password_confirmation" required
+                            class="clean-input"
+                            placeholder="Ulangi password" />
+                    </div>
+
+                    <div class="flex items-start space-x-3 pt-2">
+                        <input id="terms" type="checkbox" class="clean-checkbox mt-1" />
+                        <label for="terms" class="text-sm text-white leading-relaxed">
+                            Saya setuju dengan 
+                            <a href="#" class="text-green-400 hover:text-green-300 transition-colors underline">
+                                Syarat dan Ketentuan
+                            </a> 
+                            Heart Horizon
+                        </label>
+                    </div>
+
+                    <button type="submit" disabled id="submitBtn" class="simple-btn mt-6">
+                        Daftar Sekarang
+                    </button>
+                </form>
+
+                @if(session('status'))
+                    <div class="success-message">
+                        <span>✅</span>
+                        <span>{{ session('status') }}</span>
+                    </div>
+                @endif
+
+                <div class="mt-8 text-center">
+                    <p class="text-gray-300">
+                        Sudah punya akun?
+                        <a href="{{ route('login.form') }}" class="text-green-400 hover:text-green-300 transition-colors font-medium ml-1 underline">
+                            Masuk di sini
+                        </a>
+                    </p>
+                </div>
             </div>
         </div>
     </div>
-
-    <script>
-        // Enable submit button only if terms checkbox is checked
-        const termsCheck = document.getElementById('terms');
-        const submitBtn = document.getElementById('submitBtn');
-
-        termsCheck.addEventListener('change', () => {
-            submitBtn.disabled = !termsCheck.checked;
-        });
-
-        // Add floating animation to form elements
-        document.addEventListener('DOMContentLoaded', function() {
-            const inputs = document.querySelectorAll('.input-enhanced');
-            inputs.forEach((input, index) => {
-                input.style.animationDelay = `${index * 0.1}s`;
-                input.classList.add('animate-fadeIn');
-            });
-        });
-    </script>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const termsCheck = document.getElementById('terms');
+    const submitBtn = document.getElementById('submitBtn');
+
+    // Enable submit button only if terms checkbox is checked
+    termsCheck.addEventListener('change', () => {
+        submitBtn.disabled = !termsCheck.checked;
+    });
+
+    // Form validation enhancement
+    const inputs = document.querySelectorAll('.clean-input');
+    inputs.forEach(input => {
+        input.addEventListener('blur', function() {
+            if (this.value.trim() === '' && this.hasAttribute('required')) {
+                this.classList.add('error-input');
+            } else {
+                this.classList.remove('error-input');
+            }
+        });
+
+        input.addEventListener('input', function() {
+            this.classList.remove('error-input');
+        });
+    });
+
+    // Password confirmation validation
+    const password = document.getElementById('password');
+    const confirmPassword = document.getElementById('password_confirmation');
+
+    confirmPassword.addEventListener('blur', function() {
+        if (this.value !== password.value && this.value !== '') {
+            this.classList.add('error-input');
+        } else {
+            this.classList.remove('error-input');
+        }
+    });
+});
+</script>
 @endsection
