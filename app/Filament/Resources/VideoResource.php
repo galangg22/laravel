@@ -12,7 +12,6 @@ use Filament\Tables;
 class VideoResource extends Resource
 {
     protected static ?string $model = Video::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-collection';
 
     public static function form(Form $form): Form
@@ -33,13 +32,18 @@ class VideoResource extends Resource
                     ->required()
                     ->label('Category'),
 
-                Forms\Components\FileUpload::make('thumbnail_path')  // Ganti nama menjadi 'thumbnail_path' untuk konsistensi
+                // VERSI YANG PALING KOMPATIBEL
+                Forms\Components\FileUpload::make('thumbnail_path')
                     ->disk('public')
-                    ->directory('thumbnails')  // Menyimpan di folder public/thumbnails
+                    ->directory('thumbnails')
                     ->label('Thumbnail')
                     ->required()
-                    ->image(),
-                    Forms\Components\TextInput::make('video_url')
+                    ->image()
+                    ->acceptedFileTypes(['image/*'])
+                    ->maxSize(10248)
+                    ->visibility('public'),
+
+                Forms\Components\TextInput::make('video_url')
                     ->label('Video URL')
                     ->url()
                     ->required(),
@@ -55,17 +59,15 @@ class VideoResource extends Resource
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('description')
-                    ->limit(50)
-                    ->label('Description'),
+                    ->limit(50),
 
-                Tables\Columns\ImageColumn::make('thumbnail_path')  // Menampilkan gambar berdasarkan thumbnail_path
-                    ->label('Thumbnail'),
-                    Tables\Columns\TextColumn::make('video_url')
-                    ->url(fn ($record) => $record->reference_url ? $record->reference_url : '#')  // Mengembalikan URL yang valid atau fallback ke '#'
-                    ->label('video URL')
-            ])
-            ->filters([ // Filters can be added here if needed
-                //
+                Tables\Columns\ImageColumn::make('thumbnail_path')
+                    ->label('Thumbnail')
+                    ->disk('public'),
+
+                Tables\Columns\TextColumn::make('video_url')
+                    ->label('Video URL')
+                    ->limit(30),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

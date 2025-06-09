@@ -16,7 +16,7 @@
     
     <!-- Carousel Items -->
     <div class="carousel-item w-full h-full">
-      <img src="{{ asset('img/Screenshot 2025-01-12 132513.png') }}" 
+      <img src="{{ asset('image/dashboard1.png') }}" 
            class="w-full h-full object-cover" 
            alt="Heart Horizon Screenshot 1" />
     </div>

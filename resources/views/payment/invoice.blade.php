@@ -300,7 +300,7 @@
                 <!-- Company Info -->
                 <div class="company-info">
                     <div class="company-logo">
-                        <img src="{{ asset('storage/image/newlogo.png') }}" alt="Company Logo" />
+                        <img src="{{ asset('image/newlogo.png') }}" alt="Company Logo" />
                     </div>
                     <h3 class="mb-2">Heart Horizon</h3>
                     <p class="text-muted mb-0">Platform Pembelajaran Online Terdepan</p>

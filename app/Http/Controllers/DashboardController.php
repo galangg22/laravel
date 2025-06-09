@@ -72,7 +72,7 @@ class DashboardController extends Controller
                 'bio' => 'nullable|string|max:500',
                 'age' => 'nullable|integer|min:13|max:100',
                 'gender' => 'required|in:male,female,other',
-                'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+                'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120' // 5MB = 5120KB
             ]);
 
             $user = Auth::user();
@@ -100,6 +100,15 @@ class DashboardController extends Controller
             // Handle profile picture upload
             if ($request->hasFile('profile_picture')) {
                 $file = $request->file('profile_picture');
+                
+                // Validasi ukuran file (5MB)
+                if ($file->getSize() > 5 * 1024 * 1024) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'File terlalu besar! Maksimal ukuran file adalah 5MB.'
+                    ], 422);
+                }
+                
                 $fileName = time() . '_' . $user->id . '.' . $file->getClientOriginalExtension();
                 
                 // Simpan file ke storage/app/public/profiles
@@ -139,7 +148,7 @@ class DashboardController extends Controller
                 'bio' => 'nullable|string|max:500',
                 'age' => 'nullable|integer|min:13|max:100',
                 'gender' => 'required|in:male,female,other',
-                'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+                'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120' // 5MB = 5120KB
             ]);
 
             $user = Auth::user();
@@ -166,12 +175,21 @@ class DashboardController extends Controller
 
             // Handle profile picture upload
             if ($request->hasFile('profile_picture')) {
+                $file = $request->file('profile_picture');
+                
+                // Validasi ukuran file (5MB)
+                if ($file->getSize() > 5 * 1024 * 1024) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'File terlalu besar! Maksimal ukuran file adalah 5MB.'
+                    ], 422);
+                }
+                
                 // Hapus foto lama jika ada
                 if ($profile->profile_picture) {
                     Storage::delete('public/profiles/' . $profile->profile_picture);
                 }
 
-                $file = $request->file('profile_picture');
                 $fileName = time() . '_' . $user->id . '.' . $file->getClientOriginalExtension();
                 $file->storeAs('public/profiles', $fileName);
                 $data['profile_picture'] = $fileName;
