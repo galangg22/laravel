@@ -18,11 +18,22 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
-    {
-        if (app()->environment('local')) {
-        URL::forceRootUrl(config('app.url'));
-        URL::forceScheme('https'); // penting untuk Ngrok
+    public function boot()
+{
+    // PASTIKAN INI DI-COMMENT UNTUK LOCAL:
+    
+    if (request()->hasHeader('X-Forwarded-Host')) {
+        $host = request()->header('X-Forwarded-Host');
+        $protocol = request()->header('X-Forwarded-Proto', 'https');
+        
+        URL::forceRootUrl($protocol . '://' . $host);
+        URL::forceScheme($protocol);
     }
+    
+    if (app()->environment('production') || request()->hasHeader('X-Forwarded-Proto')) {
+        URL::forceScheme('https');
     }
+    
+}
+
 }

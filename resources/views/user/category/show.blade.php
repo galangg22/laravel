@@ -1,44 +1,21 @@
-<!DOCTYPE html>
-<html lang="en" data-theme="dark">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $category->name }} - Heart Horizon</title>
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.24/dist/full.min.css" rel="stylesheet" type="text/css" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
-</head>
-<body class="bg-gradient-to-br from-[#002c14] via-[#000000] to-[#002c14] min-h-screen">
+@extends('layouts.dashboard')
 
-<script>
-    window.Laravel = {
-        csrfToken: '{{ csrf_token() }}'
-    };
-</script>
+@section('content')
+<!-- Add Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&display=swap" rel="stylesheet">
 
 <div class="min-h-screen text-white p-2 sm:p-4 lg:p-6">
     <div class="max-w-7xl mx-auto">
         
-        <!-- RESPONSIVE HEADER -->
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 gap-3 sm:gap-4">
-            <!-- Back Button - RESPONSIVE -->
-            <a href="{{ route('dashboard.index') }}" 
-               class="inline-flex items-center justify-center px-3 py-2 sm:px-4 sm:py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-green-500/30 text-sm sm:text-base w-full sm:w-auto">
-                <svg class="w-4 h-4 sm:w-5 sm:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                </svg>
-                <span class="whitespace-nowrap">Back to Dashboard</span>
-            </a>
-            
-            <!-- Category Title - RESPONSIVE -->
-            <h1 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-green-400 text-center sm:text-left flex-1 order-first sm:order-none" 
-                style="font-family: 'Orbitron', sans-serif; text-shadow: 0 0 10px #00ff00;">
+        <!-- RESPONSIVE HEADER - TANPA TOMBOL BACK TO DASHBOARD -->
+        <div id="grid-header" class="flex flex-col sm:flex-row items-center justify-center mb-4 sm:mb-6 gap-3 sm:gap-4">
+            <!-- Category Title - CENTER ALIGNED -->
+            <h1 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-green-400 text-center" 
+                style="font-family: 'Lexend Deca', sans-serif; text-shadow: 0 0 10px #ffffff;">
                 {{ $category->name }}
             </h1>
-            
-            <!-- Spacer for desktop alignment -->
-            <div class="hidden lg:block w-32"></div>
         </div>
 
         <!-- RESPONSIVE GRID VIEW -->
@@ -55,9 +32,9 @@
                                 <img src="{{ asset('storage/' . $video->thumbnail_path) }}" 
                                      alt="{{ $video->title }}" 
                                      class="w-full h-full object-cover"
-                                     onerror="this.src='https://via.placeholder.com/320x180?text=No+Thumbnail'">
+                                     onerror="this.src='data:image/svg+xml;base64,{{ base64_encode('<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'320\' height=\'180\' viewBox=\'0 0 320 180\'><rect width=\'100%\' height=\'100%\' fill=\'#374151\'/><text x=\'50%\' y=\'50%\' text-anchor=\'middle\' dy=\'.3em\' fill=\'#9ca3af\' font-family=\'Arial, sans-serif\' font-size=\'16\' font-weight=\'600\'>No Thumbnail</text></svg>') }}'">
                             @else
-                                <div class="w-full h-full flex items-center justify-center bg-gray-700">
+                                <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-700 to-gray-800">
                                     <svg class="w-12 sm:w-16 h-12 sm:h-16 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path>
                                     </svg>
@@ -77,7 +54,7 @@
                         <!-- Video Info -->
                         <div class="p-3 sm:p-4">
                             <h3 class="font-bold text-sm sm:text-base lg:text-lg text-green-400 mb-2 line-clamp-2" 
-                                style="font-family: 'Orbitron', sans-serif;">
+                                style="font-family: 'Lexend Deca', sans-serif;">
                                 {{ $video->title }}
                             </h3>
                             <p class="text-gray-300 text-xs sm:text-sm line-clamp-2 sm:line-clamp-3">
@@ -94,7 +71,8 @@
                             <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path>
                         </svg>
                     </div>
-                    <h3 class="text-lg sm:text-xl font-bold text-gray-400 mb-2">No Videos Available</h3>
+                    <h3 class="text-lg sm:text-xl font-bold text-gray-400 mb-2" 
+                        style="font-family: 'Lexend Deca', sans-serif;">No Videos Available</h3>
                     <p class="text-gray-500 text-sm sm:text-base">This category doesn't have any videos yet.</p>
                 </div>
             @endif
@@ -102,6 +80,14 @@
 
         <!-- RESPONSIVE VIDEO PLAYER VIEW -->
         <div id="player-view" class="player-container hidden">
+            <!-- PLAYER HEADER - HANYA JUDUL CATEGORY -->
+            <div class="mb-4 sm:mb-6">
+                <h1 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-green-400 text-center" 
+                    style="font-family: 'Lexend Deca', sans-serif; text-shadow: 0 0 10px #00ff00;">
+                    {{ $category->name }}
+                </h1>
+            </div>
+
             <!-- Mobile Controls -->
             <div class="lg:hidden mb-3 sm:mb-4 flex flex-col sm:flex-row gap-2 sm:gap-3">
                 <button id="playlist-toggle" class="inline-flex items-center justify-center px-3 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-all duration-300 text-sm flex-1 sm:flex-none">
@@ -132,7 +118,7 @@
                         
                         <!-- Main Video Area -->
                         <div class="lg:col-span-3">
-                            <!-- Desktop Back Button -->
+                            <!-- Desktop Back to Grid Button -->
                             <div class="hidden lg:block mb-4">
                                 <button id="back-to-grid-desktop" class="inline-flex items-center justify-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-lg transition-all duration-300">
                                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -174,7 +160,7 @@
                                     <!-- Video Details -->
                                     <div class="flex-1 min-w-0">
                                         <h1 id="video-title" class="text-lg sm:text-xl lg:text-2xl font-bold text-green-400 mb-2 sm:mb-3 line-clamp-2" 
-                                            style="font-family: 'Orbitron', sans-serif;">
+                                            style="font-family: 'Lexend Deca', sans-serif;">
                                             Select a video to play
                                         </h1>
                                         <p id="video-description" class="text-gray-300 leading-relaxed text-sm sm:text-base line-clamp-3 sm:line-clamp-none">
@@ -190,24 +176,25 @@
                 <!-- Responsive Playlist Sidebar -->
                 <div class="drawer-side lg:drawer-open">
                     <label for="playlist-drawer" class="drawer-overlay lg:hidden"></label>
-                    <div class="w-72 sm:w-80 min-h-full bg-gray-900/95 lg:bg-transparent">
-                        
-                        <!-- Playlist Header -->
-                        <div class="bg-green-600 rounded-t-xl lg:rounded-xl p-3 sm:p-4 m-3 sm:m-4 lg:m-0">
-                            <h3 class="text-lg sm:text-xl font-bold text-white flex items-center gap-2" 
-                                style="font-family: 'Orbitron', sans-serif;">
-                                <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
-                                </svg>
-                                Playlist
-                            </h3>
-                            <p class="text-green-100 text-xs sm:text-sm mt-1" id="playlist-count">{{ $videos->count() }} videos</p>
-                        </div>               
-                        
-                        <!-- Playlist Items -->
-                        <div class="bg-gray-800/80 lg:bg-gray-800/50 rounded-b-xl lg:rounded-xl mx-3 sm:mx-4 lg:mx-0 lg:mt-2 border border-green-600/30">
-                            <div id="playlist-container" class="space-y-1 p-2">
-                                <!-- Playlist items will be populated by JavaScript -->
+                    <div id="sidebar-container" class="w-72 sm:w-80 min-h-full bg-gray-900/95 lg:bg-transparent">
+                        <div id="sidebar" class="h-full overflow-y-auto">
+                            <!-- Playlist Header -->
+                            <div class="bg-green-600 rounded-t-xl lg:rounded-xl p-3 sm:p-4 m-3 sm:m-4 lg:m-0">
+                                <h3 class="text-lg sm:text-xl font-bold text-white flex items-center gap-2" 
+                                    style="font-family: 'Lexend Deca', sans-serif;">
+                                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    Playlist
+                                </h3>
+                                <p class="text-green-100 text-xs sm:text-sm mt-1" id="playlist-count">{{ $videos->count() }} videos</p>
+                            </div>               
+                            
+                            <!-- Playlist Items -->
+                            <div class="bg-gray-800/80 lg:bg-gray-800/50 rounded-b-xl lg:rounded-xl mx-3 sm:mx-4 lg:mx-0 lg:mt-2 border border-green-600/30">
+                                <div id="playlist-container" class="space-y-1 p-2 max-h-[60vh] overflow-y-auto">
+                                    <!-- Playlist items will be populated by JavaScript -->
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -221,7 +208,7 @@
 <div id="toast-container" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 space-y-2"></div>
 
 <script>
-// Data video dari Blade (sama seperti sebelumnya)
+// Data video dari Blade dengan SVG fallback
 const videosData = [
     @if($videos->count() > 0)
         @foreach($videos as $video)
@@ -230,7 +217,7 @@ const videosData = [
             title: '{{ str_replace(["'", '"'], ["\\'", '\\"'], $video->title ?? "No Title") }}',
             description: '{{ str_replace(["'", '"'], ["\\'", '\\"'], $video->description ?? "No Description") }}',
             video_url: '{{ $video->video_url ?? "" }}',
-            thumbnail: '{{ $video->thumbnail_path ? asset("storage/" . $video->thumbnail_path) : "https://via.placeholder.com/320x180?text=No+Thumbnail" }}',
+            thumbnail: '{{ $video->thumbnail_path ? asset("storage/" . $video->thumbnail_path) : "" }}',
             is_favorited: {{ Auth::user()->hasFavorited($video->id) ? 'true' : 'false' }}
         }@if(!$loop->last),@endif
         @endforeach
@@ -240,6 +227,20 @@ const videosData = [
 let currentVideoIndex = 0;
 let currentVideoId = null;
 
+// SVG Placeholder Generator
+function createSVGPlaceholder(width, height, text, bgColor = '#374151', textColor = '#9ca3af') {
+    const svg = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+            <rect width="100%" height="100%" fill="${bgColor}"/>
+            <text x="50%" y="50%" text-anchor="middle" dy=".3em" fill="${textColor}" 
+                  font-family="Arial, sans-serif" font-size="${Math.max(14, width/20)}" font-weight="600">
+                ${text}
+            </text>
+        </svg>
+    `;
+    return `data:image/svg+xml;base64,${btoa(svg)}`;
+}
+
 // Extract YouTube video ID from URL
 function extractYouTubeId(url) {
     if (!url) return '';
@@ -248,10 +249,67 @@ function extractYouTubeId(url) {
     return match ? match[1] : url;
 }
 
+// Sidebar Control Functions - VERSI DIPERBAIKI
+function hideSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const sidebarContainer = document.getElementById('sidebar-container');
+    
+    if (sidebar) {
+        sidebar.style.visibility = 'hidden';
+        sidebar.style.opacity = '0';
+        sidebar.style.pointerEvents = 'none';
+        sidebar.style.position = 'absolute';
+        sidebar.style.left = '-9999px';
+    }
+    if (sidebarContainer) {
+        sidebarContainer.style.visibility = 'hidden';
+        sidebarContainer.style.opacity = '0';
+        sidebarContainer.style.pointerEvents = 'none';
+        sidebarContainer.style.position = 'absolute';
+        sidebarContainer.style.left = '-9999px';
+    }
+    
+    console.log('Sidebar hidden for player view');
+}
+
+function showSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const sidebarContainer = document.getElementById('sidebar-container');
+    
+    if (sidebar) {
+        // Reset semua style yang diubah
+        sidebar.style.visibility = '';
+        sidebar.style.opacity = '';
+        sidebar.style.pointerEvents = '';
+        sidebar.style.position = '';
+        sidebar.style.left = '';
+        sidebar.style.overflow = '';
+        sidebar.style.overflowY = '';
+        sidebar.style.height = '';
+    }
+    if (sidebarContainer) {
+        // Reset semua style yang diubah
+        sidebarContainer.style.visibility = '';
+        sidebarContainer.style.opacity = '';
+        sidebarContainer.style.pointerEvents = '';
+        sidebarContainer.style.position = '';
+        sidebarContainer.style.left = '';
+        sidebarContainer.style.overflow = '';
+        sidebarContainer.style.overflowY = '';
+        sidebarContainer.style.height = '';
+    }
+    
+    console.log('Sidebar shown for grid view');
+}
+
 // Toggle favorite for current playing video ONLY
 function toggleCurrentVideoFavorite() {
     if (!currentVideoId) {
-        showToast('Please select a video first', 'info');
+        if (typeof window.showToast === 'function') {
+            window.showToast('Please select a video first', 'info');
+        } else {
+            showToast('Please select a video first', 'info');
+        }
         return;
     }
     
@@ -270,7 +328,11 @@ function toggleCurrentVideoFavorite() {
     
     if (!csrfToken) {
         console.error('CSRF token not found');
-        showToast('Security token not found. Please refresh the page.', 'error');
+        if (typeof window.showToast === 'function') {
+            window.showToast('Security token not found. Please refresh the page.', 'error');
+        } else {
+            showToast('Security token not found. Please refresh the page.', 'error');
+        }
         return;
     }
     
@@ -313,14 +375,26 @@ function toggleCurrentVideoFavorite() {
             updatePlayerFavoriteButton();
             
             // Show toast
-            showToast(data.message, data.is_favorited ? 'success' : 'info');
+            if (typeof window.showToast === 'function') {
+                window.showToast(data.message, data.is_favorited ? 'success' : 'info');
+            } else {
+                showToast(data.message, data.is_favorited ? 'success' : 'info');
+            }
         } else {
-            showToast(data.message || 'Failed to update favorite', 'error');
+            if (typeof window.showToast === 'function') {
+                window.showToast(data.message || 'Failed to update favorite', 'error');
+            } else {
+                showToast(data.message || 'Failed to update favorite', 'error');
+            }
         }
     })
     .catch(error => {
         console.error('Fetch error:', error);
-        showToast(error.message || 'Something went wrong! Please try again.', 'error');
+        if (typeof window.showToast === 'function') {
+            window.showToast(error.message || 'Something went wrong! Please try again.', 'error');
+        } else {
+            showToast(error.message || 'Something went wrong! Please try again.', 'error');
+        }
     })
     .finally(() => {
         favoriteBtn.disabled = false;
@@ -370,8 +444,12 @@ function openVideoPlayer(videoId) {
     const videoIndex = videosData.findIndex(video => video.id === videoId);
     if (videoIndex === -1) return;
     
+    // Hide sidebar when entering player view
+    hideSidebar();
+    
     // Hide grid view and show player view
     document.getElementById('grid-view').classList.add('hidden');
+    document.getElementById('grid-header').classList.add('hidden');
     document.getElementById('player-view').classList.remove('hidden');
     
     // Initialize playlist
@@ -383,8 +461,12 @@ function openVideoPlayer(videoId) {
 
 // Back to grid view
 function backToGrid() {
+    // Show sidebar when returning to grid view
+    showSidebar();
+    
     document.getElementById('player-view').classList.add('hidden');
     document.getElementById('grid-view').classList.remove('hidden');
+    document.getElementById('grid-header').classList.remove('hidden');
     
     // Stop current video
     document.getElementById('youtube-player').src = '';
@@ -394,7 +476,7 @@ function backToGrid() {
     updatePlayerFavoriteButton();
 }
 
-// Initialize playlist - NO FAVORITE BUTTONS IN SIDEBAR
+// Initialize playlist
 function initializePlaylist() {
     const container = document.getElementById('playlist-container');
     container.innerHTML = '';
@@ -414,17 +496,20 @@ function initializePlaylist() {
         playlistItem.className = `playlist-item p-2 sm:p-3 rounded-lg cursor-pointer transition-all duration-300 hover:bg-green-600/20 ${isActive ? 'bg-green-600/30 border border-green-500' : 'hover:bg-gray-700/50'}`;
         playlistItem.onclick = () => playVideo(index);
         
+        // Create thumbnail with SVG fallback
+        const thumbnailSrc = video.thumbnail || createSVGPlaceholder(80, 56, 'No Image');
+        
         playlistItem.innerHTML = `
             <div class="flex gap-2 sm:gap-3">
                 <div class="relative flex-shrink-0">
-                    <img src="${video.thumbnail}" 
+                    <img src="${thumbnailSrc}" 
                          alt="${video.title}" 
                          class="w-16 h-12 sm:w-20 sm:h-14 object-cover rounded-md"
-                         onerror="this.src='https://via.placeholder.com/80x56?text=No+Image'">
+                         onerror="this.src='${createSVGPlaceholder(80, 56, 'No Image')}'">
                     ${isActive ? '<div class="absolute inset-0 bg-green-500/20 rounded-md flex items-center justify-center"><svg class="w-4 h-4 sm:w-6 sm:h-6 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg></div>' : ''}
                 </div>
                 <div class="flex-1 min-w-0">
-                    <h4 class="font-semibold text-xs sm:text-sm ${isActive ? 'text-green-400' : 'text-white'} line-clamp-2">${video.title}</h4>
+                    <h4 class="font-semibold text-xs sm:text-sm ${isActive ? 'text-green-400' : 'text-white'} line-clamp-2" style="font-family: 'Lexend Deca', sans-serif;">${video.title}</h4>
                     <p class="text-xs text-gray-400 mt-1 line-clamp-1 sm:line-clamp-2">${video.description}</p>
                 </div>
             </div>
@@ -470,14 +555,17 @@ function playVideo(index) {
 
 // Enhanced toast notification function
 function showToast(message, type = 'info') {
+    if (typeof window.showToast === 'function') {
+        window.showToast(message, type);
+        return;
+    }
+    
     const toastContainer = document.getElementById('toast-container');
     const toast = document.createElement('div');
     
-    // Create unique ID for this toast
     const toastId = 'toast-' + Date.now();
     toast.id = toastId;
     
-    // Toast styling based on type
     let bgColor, icon, borderColor;
     switch(type) {
         case 'success':
@@ -522,19 +610,16 @@ function showToast(message, type = 'info') {
     
     toastContainer.appendChild(toast);
     
-    // Animate in
     setTimeout(() => {
         toast.classList.remove('translate-y-[-20px]', 'opacity-0');
         toast.classList.add('translate-y-0', 'opacity-100');
     }, 100);
     
-    // Auto remove after 4 seconds
     setTimeout(() => {
         removeToast(toastId);
     }, 4000);
 }
 
-// Remove toast function
 function removeToast(toastId) {
     const toast = document.getElementById(toastId);
     if (toast) {
@@ -549,10 +634,8 @@ function removeToast(toastId) {
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM loaded');
     
-    // Initialize favorite button state
     updatePlayerFavoriteButton();
     
-    // Back to grid buttons
     const backToGridBtn = document.getElementById('back-to-grid');
     const backToGridDesktopBtn = document.getElementById('back-to-grid-desktop');
     
@@ -563,7 +646,6 @@ document.addEventListener('DOMContentLoaded', function() {
         backToGridDesktopBtn.addEventListener('click', backToGrid);
     }
     
-    // Playlist toggle for mobile
     const playlistToggle = document.getElementById('playlist-toggle');
     if (playlistToggle) {
         playlistToggle.addEventListener('click', function() {
@@ -577,6 +659,8 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&display=swap');
+
 .line-clamp-1 {
     display: -webkit-box;
     -webkit-line-clamp: 1;
@@ -596,6 +680,43 @@ document.addEventListener('DOMContentLoaded', function() {
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
+}
+
+/* Perbaikan untuk grid layout */
+.grid-container {
+    position: relative;
+    z-index: 1;
+}
+
+.player-container {
+    position: relative;
+    z-index: 2;
+}
+
+/* Pastikan tidak ada margin/padding yang aneh */
+#grid-view, #player-view {
+    margin: 0;
+    padding: 0;
+}
+
+/* Reset untuk drawer */
+.drawer {
+    position: relative;
+}
+
+.drawer-content {
+    position: relative;
+}
+
+/* Pastikan sidebar memiliki scroll default */
+#sidebar, #sidebar-container {
+    overflow-y: auto;
+    max-height: 100vh;
+}
+
+/* Pastikan sidebar selalu scrollable di grid mode */
+.drawer-side {
+    overflow-y: auto;
 }
 
 /* Enhanced responsive grid */
@@ -638,7 +759,30 @@ button, a {
         min-width: 44px;
     }
 }
+
+/* Playlist container scroll styling */
+#playlist-container {
+    scrollbar-width: thin;
+    scrollbar-color: #10b981 #374151;
+}
+
+#playlist-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+#playlist-container::-webkit-scrollbar-track {
+    background: #374151;
+    border-radius: 3px;
+}
+
+#playlist-container::-webkit-scrollbar-thumb {
+    background: #10b981;
+    border-radius: 3px;
+}
+
+#playlist-container::-webkit-scrollbar-thumb:hover {
+    background: #059669;
+}
 </style>
 
-</body>
-</html>
+@endsection
