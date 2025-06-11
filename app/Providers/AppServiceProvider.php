@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\URL;
+use Filament\Facades\Filament;
+use App\Filament\Pages\Dashboard;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -33,6 +35,13 @@ class AppServiceProvider extends ServiceProvider
     if (app()->environment('production') || request()->hasHeader('X-Forwarded-Proto')) {
         URL::forceScheme('https');
     }
+
+    // filament dashboard
+    Filament::serving(function () {
+            Filament::registerPages([
+                Dashboard::class,
+            ]);
+        });
     
 }
 

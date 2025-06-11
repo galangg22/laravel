@@ -12,8 +12,8 @@
         <!-- RESPONSIVE HEADER - TANPA TOMBOL BACK TO DASHBOARD -->
         <div id="grid-header" class="flex flex-col sm:flex-row items-center justify-center mb-4 sm:mb-6 gap-3 sm:gap-4">
             <!-- Category Title - CENTER ALIGNED -->
-            <h1 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-green-400 text-center" 
-                style="font-family: 'Lexend Deca', sans-serif; text-shadow: 0 0 10px #ffffff;">
+            <h1 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white-400 text-center" 
+                style="font-family: 'Lexend Deca', sans-serif; text-shadow: 0 0 10px #059400;">
                 {{ $category->name }}
             </h1>
         </div>
@@ -21,7 +21,7 @@
         <!-- RESPONSIVE GRID VIEW -->
         <div id="grid-view" class="grid-container">
             @if($videos->count() > 0)
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
+                <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
                     @foreach($videos as $video)
                     <div class="video-card bg-gray-800/50 rounded-xl overflow-hidden border border-green-600/30 hover:border-green-500 transition-all duration-300 cursor-pointer transform hover:scale-105 relative"
                          onclick="openVideoPlayer({{ $video->id }})">
@@ -53,7 +53,7 @@
                         
                         <!-- Video Info -->
                         <div class="p-3 sm:p-4">
-                            <h3 class="font-bold text-sm sm:text-base lg:text-lg text-green-400 mb-2 line-clamp-2" 
+                            <h3 class="font-bold text-sm text-center sm:text-base lg:text-lg text-green-400 mb-2 line-clamp-2" 
                                 style="font-family: 'Lexend Deca', sans-serif;">
                                 {{ $video->title }}
                             </h3>
@@ -159,11 +159,11 @@
                                     
                                     <!-- Video Details -->
                                     <div class="flex-1 min-w-0">
-                                        <h1 id="video-title" class="text-lg sm:text-xl lg:text-2xl font-bold text-green-400 mb-2 sm:mb-3 line-clamp-2" 
+                                        <h1 id="video-title" class="text-lg sm:text-xl text-end lg:text-2xl font-bold text-green-400 mb-2 sm:mb-3 line-clamp-2" 
                                             style="font-family: 'Lexend Deca', sans-serif;">
                                             Select a video to play
                                         </h1>
-                                        <p id="video-description" class="text-gray-300 leading-relaxed text-sm sm:text-base line-clamp-3 sm:line-clamp-none">
+                                        <p id="video-description" class="text-gray-300 text-end leading-relaxed text-sm sm:text-base line-clamp-3 sm:line-clamp-none">
                                             Choose a video from the playlist to start watching.
                                         </p>
                                     </div>
