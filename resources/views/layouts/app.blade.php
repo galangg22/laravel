@@ -1,21 +1,21 @@
-<!DOCTYPE html>
+{{-- <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name', 'Heart Horizon') }}</title>
-    
+
     <!-- DaisyUI + Tailwind CSS -->
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.24/dist/full.min.css" rel="stylesheet" type="text/css" />
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     <!-- TAMBAHKAN SWEET ALERT 2 DI SINI -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
+
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
-    
+
     <!-- Custom Tailwind Config -->
     <script>
         tailwind.config = {
@@ -46,7 +46,7 @@
             }
         }
     </script>
-    
+
     <!-- TAMBAHKAN GLOBAL SWEET ALERT FUNCTIONS -->
     <script>
         // Wait for Sweet Alert to load
@@ -54,7 +54,7 @@
             // Check if Sweet Alert is loaded
             if (typeof Swal !== 'undefined') {
                 console.log('Sweet Alert loaded successfully');
-                
+
                 // Global Sweet Alert Toast function
                 window.showToast = function(message, type = 'info') {
                     const config = {
@@ -145,19 +145,19 @@
 
                     return Swal.fire(config);
                 }
-                
+
             } else {
                 console.error('Sweet Alert failed to load');
-                
+
                 // Fallback functions
                 window.showToast = function(message, type = 'info') {
                     alert(message);
                 }
-                
+
                 window.confirmAction = function(title, text, confirmText = 'Yes', cancelText = 'Cancel') {
                     return Promise.resolve(confirm(title + '\n' + text));
                 }
-                
+
                 window.showAlert = function(message, type = 'info', title = '') {
                     alert(message);
                     return Promise.resolve();
@@ -165,12 +165,12 @@
             }
         });
     </script>
-    
+
     @stack('styles')
 </head>
 <body class="bg-gradient-to-br from-gray-900 via-black to-gray-900 min-h-screen">
     @yield('content')
-    
+
     <!-- TAMBAHKAN SWEET ALERT STYLES -->
     <style>
         /* Sweet Alert Heart Horizon Theme */
@@ -215,7 +215,31 @@
             border-color: #22c55e transparent #22c55e transparent !important;
         }
     </style>
-    
+
+    @stack('scripts')
+</body>
+</html> --}}
+
+
+
+<!-- resources/views/layouts/app.blade.php -->
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{{ config('app.name', 'Laravel') }}</title>
+
+    @viteReactRefresh
+    @vite(['resources/css/app.css', 'resources/js/app.jsx'])
+</head>
+<body class="">
+    <div id="app">
+        @yield('content')
+    </div>
+
+    @stack('react-components')
     @stack('scripts')
 </body>
 </html>
